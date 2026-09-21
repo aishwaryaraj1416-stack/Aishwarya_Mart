@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | Aishwarya Mart</title>
+
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        --burgundy: #8f0000;
+        --dark-burgundy: #650000;
+        --light-burgundy: #aa2424;
+        --cream: #faf6ee;
+        --warm-white: #fffdf9;
+        --soft-cream: #f3ece1;
+        --text: #321d1d;
+        --muted: #806c6c;
+        --border: #eadbd4;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: var(--cream);
+        color: var(--text);
+        min-height: 100vh;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    /* HEADER */
+    header {
+        height: 76px;
+        background: var(--warm-white);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 6%;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--burgundy);
+        font-size: 21px;
+        font-weight: bold;
+    }
+
+    .brand img {
+        width: 43px;
+        height: 43px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    nav {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        font-size: 14px;
+    }
+
+    nav a:hover {
+        color: var(--burgundy);
+    }
+
+    .bag-link {
+        color: var(--burgundy);
+        font-weight: bold;
+    }
+
+    /* MAIN */
+    main {
+        width: min(1050px, 90%);
+        margin: 55px auto 80px;
+    }
+
+    .heading {
+        margin-bottom: 35px;
+    }
+
+    .eyebrow {
+        color: var(--burgundy);
+        font-size: 12px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+    }
+
+    h1 {
+        font-family: Georgia, serif;
+        font-size: 45px;
+        font-weight: normal;
+        margin-bottom: 10px;
+    }
+
+    .intro {
+        color: var(--muted);
+        font-size: 15px;
+    }
+
+    /* ACCOUNT GRID */
+    .account-grid {
+        display: grid;
+        grid-template-columns: 0.75fr 1.25fr;
+        gap: 25px;
+    }
+
+    .card {
+        background: var(--warm-white);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 28px;
+    }
+
+    /* PROFILE CARD */
+    .profile-card {
+        text-align: center;
+    }
+
+    .avatar {
+        width: 85px;
+        height: 85px;
+        margin: 0 auto 18px;
+        border-radius: 50%;
+        background: var(--burgundy);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: Georgia, serif;
+        font-size: 31px;
+    }
+
+    .profile-card h2 {
+        font-family: Georgia, serif;
+        font-size: 25px;
+        font-weight: normal;
+        margin-bottom: 6px;
+    }
+
+    .profile-email {
+        color: var(--muted);
+        font-size: 13px;
+        margin-bottom: 25px;
+    }
+
+    .role {
+        display: inline-block;
+        background: #f1e0df;
+        color: var(--burgundy);
+        padding: 7px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        margin-bottom: 25px;
+    }
+
+    .logout-button {
+        width: 100%;
+        border: 1px solid var(--burgundy);
+        background: transparent;
+        color: var(--burgundy);
+        padding: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .logout-button:hover {
+        background: var(--burgundy);
+        color: white;
+    }
+
+    /* DETAILS */
+    .card-title {
+        font-family: Georgia, serif;
+        font-size: 25px;
+        font-weight: normal;
+        margin-bottom: 22px;
+    }
+
+    .detail-row {
+        padding: 17px 0;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        gap: 25px;
+    }
+
+    .detail-row:first-of-type {
+        padding-top: 0;
+    }
+
+    .detail-row:last-of-type {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .detail-value {
+        font-size: 14px;
+        font-weight: bold;
+        text-align: right;
+    }
+
+    /* QUICK LINKS */
+    .quick-links {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+    .quick-card {
+        background: var(--warm-white);
+        border: 1px solid var(--border);
+        border-radius: 15px;
+        padding: 23px;
+        transition: 0.2s;
+    }
+
+    .quick-card:hover {
+        border-color: var(--burgundy);
+        transform: translateY(-2px);
+    }
+
+    .quick-icon {
+        font-size: 23px;
+        color: var(--burgundy);
+        margin-bottom: 12px;
+    }
+
+    .quick-card h3 {
+        font-size: 15px;
+        margin-bottom: 6px;
+    }
+
+    .quick-card p {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    /* FOOTER */
+    footer {
+        background: var(--dark-burgundy);
+        color: #fff4ef;
+        padding: 35px 6%;
+        text-align: center;
+        font-size: 13px;
+    }
+
+    footer p {
+        opacity: 0.8;
+    }
+
+    /* MOBILE */
+    @media (max-width: 750px) {
+
+        header {
+            padding: 0 5%;
+        }
+
+        nav {
+            gap: 14px;
+            font-size: 12px;
+        }
+
+        nav a:nth-child(2),
+        nav a:nth-child(3) {
+            display: none;
+        }
+
+        main {
+            width: 92%;
+            margin-top: 35px;
+        }
+
+        h1 {
+            font-size: 36px;
+        }
+
+        .account-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .quick-links {
+            grid-template-columns: 1fr;
+        }
+
+        .detail-row {
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .detail-value {
+            text-align: left;
+        }
+    }
+</style>
+
+
+</head>
+
+<body>
+
+<header>
+
+
+<a href="index.html" class="brand">
+    <img
+        src="https://i.postimg.cc/KYvtyfcX/Whats-App-Image-2026-09-15-at-2-03-03-PM.jpg"
+        alt="Aishwarya Mart"
+    >
+    <span>Aishwarya Mart</span>
+</a>
+
+<nav>
+    <a href="index.html">Shop</a>
+    <a href="wishlist.html">Wishlist</a>
+    <a href="orders.html">Orders</a>
+    <a href="cart.html" class="bag-link">Bag</a>
+</nav>
+
+
+</header>
+
+<main>
+
+
+<section class="heading">
+    <div class="eyebrow">YOUR ACCOUNT</div>
+
+    <h1>My account.</h1>
+
+    <p class="intro">
+        Manage your profile and keep your Aishwarya Mart details in one place.
+    </p>
+</section>
+
+
+<section class="account-grid">
+
+    <!-- PROFILE -->
+    <div class="card profile-card">
+
+        <div class="avatar" id="avatar">
+            A
+        </div>
+
+        <h2 id="profileName">
+            Aishwarya
+        </h2>
+
+        <p class="profile-email" id="profileEmail">
+            customer@example.com
+        </p>
+
+        <span class="role">
+            BUYER
+        </span>
+
+        <button class="logout-button" onclick="logout()">
+            Log out
+        </button>
+
+    </div>
+
+
+    <!-- ACCOUNT DETAILS -->
+    <div class="card">
+
+        <h2 class="card-title">
+            Account details
+        </h2>
+
+        <div class="detail-row">
+            <span class="detail-label">
+                Full name
+            </span>
+
+            <span class="detail-value" id="detailName">
+                Aishwarya
+            </span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">
+                Email address
+            </span>
+
+            <span class="detail-value" id="detailEmail">
+                customer@example.com
+            </span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">
+                Account type
+            </span>
+
+            <span class="detail-value">
+                Buyer
+            </span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">
+                Member since
+            </span>
+
+            <span class="detail-value">
+                September 2026
+            </span>
+        </div>
+
+    </div>
+
+
+    <!-- QUICK LINKS -->
+    <div class="quick-links">
+
+        <a href="orders.html" class="quick-card">
+
+            <div class="quick-icon">
+                â—·
+            </div>
+
+            <h3>My orders</h3>
+
+            <p>
+                View your previous purchases and order status.
+            </p>
+
+        </a>
+
+
+        <a href="wishlist.html" class="quick-card">
+
+            <div class="quick-icon">
+                â™¡
+            </div>
+
+            <h3>My wishlist</h3>
+
+            <p>
+                Keep your favourite products saved for later.
+            </p>
+
+        </a>
+
+
+        <a href="help.html" class="quick-card">
+
+            <div class="quick-icon">
+                ?
+            </div>
+
+            <h3>Need help?</h3>
+
+            <p>
+                Find answers or get help with your Aishwarya Mart orders.
+            </p>
+
+        </a>
+
+    </div>
+
+</section>
+
+
+</main>
+
+<footer>
+    <p>Â© 2026 Aishwarya Mart Â· Style that feels like you.</p>
+</footer>
+
+<script>
+
+    /*
+        FRONTEND DEMO
+
+        Later, this page can load the logged-in user's
+        real information from the backend session/API.
+    */
+
+    const savedUser = sessionStorage.getItem("user");
+
+    if (savedUser) {
+
+        try {
+
+            const user = JSON.parse(savedUser);
+
+            const name = user.name || "Aishwarya";
+            const email = user.email || "customer@example.com";
+
+            document.getElementById("profileName").textContent = name;
+            document.getElementById("profileEmail").textContent = email;
+
+            document.getElementById("detailName").textContent = name;
+            document.getElementById("detailEmail").textContent = email;
+
+            document.getElementById("avatar").textContent =
+                name.charAt(0).toUpperCase();
+
+        } catch (error) {
+
+            console.log("Could not load saved account details.");
+
+        }
+    }
+
+
+    function logout() {
+
+        sessionStorage.clear();
+
+        window.location.href = "login.html?message=loggedout";
+    }
+
+</script>
+
+</body>
+</html>
+

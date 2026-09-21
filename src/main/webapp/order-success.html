@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>Order Confirmed | Aishwarya Mart</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+<style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        --burgundy: #8f0000;
+        --burgundy-dark: #650000;
+        --cream: #faf6ee;
+        --warm-white: #fffdf9;
+        --beige: #eee5d5;
+        --soft: #f4ece2;
+        --text: #24191a;
+        --muted: #756b6b;
+        --border: #ded6d0;
+        --white: #ffffff;
+        --green: #49634d;
+    }
+
+    body {
+        min-height: 100vh;
+        font-family: "Inter", sans-serif;
+        background: var(--cream);
+        color: var(--text);
+        display: flex;
+        flex-direction: column;
+    }
+
+
+    /* ================= HEADER ================= */
+
+    header {
+        height: 82px;
+        background: var(--warm-white);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 6%;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+    }
+
+    .logo img {
+        width: 105px;
+        height: 70px;
+        object-fit: contain;
+    }
+
+    .header-link {
+        color: var(--text);
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .header-link:hover {
+        color: var(--burgundy);
+    }
+
+
+    /* ================= MAIN ================= */
+
+    main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 70px 20px;
+    }
+
+    .success-card {
+        width: 100%;
+        max-width: 650px;
+        background: var(--warm-white);
+        border: 1px solid var(--border);
+        text-align: center;
+        padding: 55px 50px;
+    }
+
+
+    /* ================= ICON ================= */
+
+    .success-icon {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        background: var(--burgundy);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 28px;
+        font-size: 32px;
+    }
+
+
+    /* ================= CONTENT ================= */
+
+    .eyebrow {
+        color: var(--burgundy);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 2.5px;
+        margin-bottom: 14px;
+    }
+
+    h1 {
+        font-family: "DM Serif Display", serif;
+        font-size: clamp(45px, 6vw, 64px);
+        font-weight: 400;
+        line-height: 1;
+        margin-bottom: 15px;
+    }
+
+    .subtitle {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+        max-width: 440px;
+        margin: 0 auto 32px;
+    }
+
+
+    /* ================= ORDER NUMBER ================= */
+
+    .order-number {
+        background: var(--soft);
+        border: 1px solid var(--border);
+        padding: 18px;
+        margin-bottom: 25px;
+    }
+
+    .order-number span {
+        display: block;
+        color: var(--muted);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 7px;
+    }
+
+    .order-number strong {
+        font-size: 15px;
+        letter-spacing: 1px;
+    }
+
+
+    /* ================= DETAILS ================= */
+
+    .details {
+        text-align: left;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        padding: 20px 0;
+        margin-bottom: 28px;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 8px 0;
+        font-size: 12px;
+    }
+
+    .detail-row span:first-child {
+        color: var(--muted);
+    }
+
+    .detail-row strong {
+        font-weight: 600;
+        text-align: right;
+    }
+
+
+    /* ================= BUTTONS ================= */
+
+    .buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .button {
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        transition: 0.2s ease;
+    }
+
+    .primary {
+        background: var(--burgundy);
+        color: var(--white);
+    }
+
+    .primary:hover {
+        background: var(--burgundy-dark);
+    }
+
+    .secondary {
+        border: 1px solid var(--border);
+        color: var(--text);
+    }
+
+    .secondary:hover {
+        border-color: var(--burgundy);
+        color: var(--burgundy);
+    }
+
+
+    /* ================= NOTE ================= */
+
+    .note {
+        margin-top: 25px;
+        color: var(--muted);
+        font-size: 10px;
+        line-height: 1.6;
+    }
+
+
+    /* ================= FOOTER ================= */
+
+    footer {
+        background: var(--burgundy-dark);
+        color: #eadbdd;
+        padding: 30px 20px;
+        text-align: center;
+        font-size: 11px;
+        letter-spacing: 0.8px;
+    }
+
+
+    /* ================= MOBILE ================= */
+
+    @media (max-width: 550px) {
+
+        header {
+            padding: 0 20px;
+        }
+
+        .header-link {
+            display: none;
+        }
+
+        main {
+            padding: 35px 18px;
+        }
+
+        .success-card {
+            padding: 40px 22px;
+        }
+
+        .buttons {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+</style>
+
+
+</head>
+
+<body>
+
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <a href="index.html" class="logo">
+
+        <img
+            src="https://i.postimg.cc/KYvtyfcX/Whats-App-Image-2026-09-15-at-2-03-03-PM.jpg"
+            alt="Aishwarya Mart">
+
+    </a>
+
+
+    <a
+        href="orders.html"
+        class="header-link">
+
+        My orders
+
+    </a>
+
+</header>
+
+
+
+<!-- ================= MAIN ================= -->
+
+<main>
+
+    <section class="success-card">
+
+
+        <!-- SUCCESS ICON -->
+
+        <div class="success-icon">
+            âœ“
+        </div>
+
+
+        <!-- HEADING -->
+
+        <p class="eyebrow">
+            ORDER CONFIRMED
+        </p>
+
+        <h1>
+            Thank you!
+        </h1>
+
+        <p class="subtitle">
+            Your order has been placed successfully.
+            We've saved your order details and your
+            items are now on their way to you.
+        </p>
+
+
+        <!-- ORDER NUMBER -->
+
+        <div class="order-number">
+
+            <span>
+                Order number
+            </span>
+
+            <strong id="orderNumber">
+                AM-000000
+            </strong>
+
+        </div>
+
+
+        <!-- DETAILS -->
+
+        <div class="details">
+
+
+            <div class="detail-row">
+
+                <span>
+                    Customer
+                </span>
+
+                <strong id="customerName">
+                    â€”
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Email
+                </span>
+
+                <strong id="customerEmail">
+                    â€”
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Payment
+                </span>
+
+                <strong id="paymentMethod">
+                    â€”
+                </strong>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Delivery
+                </span>
+
+                <strong id="deliveryAddress">
+                    â€”
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- BUTTONS -->
+
+        <div class="buttons">
+
+            <a
+                href="orders.html"
+                class="button primary">
+
+                View my orders
+
+            </a>
+
+
+            <a
+                href="index.html"
+                class="button secondary">
+
+                Continue shopping
+
+            </a>
+
+        </div>
+
+
+        <p class="note">
+            This confirmation is part of the Aishwarya Mart
+            mock checkout experience.
+        </p>
+
+    </section>
+
+</main>
+
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    Aishwarya Mart Â· Thank you for shopping with us
+
+</footer>
+
+
+
+<script>
+
+    /* ==========================================
+       GET LAST ORDER
+       ========================================== */
+
+    const savedOrder =
+        sessionStorage.getItem("lastOrder");
+
+
+    let order = null;
+
+
+    if (savedOrder) {
+
+        try {
+
+            order =
+                JSON.parse(savedOrder);
+
+        } catch (error) {
+
+            order = null;
+
+        }
+
+    }
+
+
+    /* ==========================================
+       ORDER NUMBER
+       ========================================== */
+
+    function generateOrderNumber() {
+
+        const number =
+            Math.floor(
+                100000 +
+                Math.random() * 900000
+            );
+
+
+        return "AM-" + number;
+
+    }
+
+
+    document.getElementById("orderNumber")
+        .textContent =
+        generateOrderNumber();
+
+
+    /* ==========================================
+       DISPLAY ORDER
+       ========================================== */
+
+    if (order) {
+
+        document.getElementById("customerName")
+            .textContent =
+            order.name || "â€”";
+
+
+        document.getElementById("customerEmail")
+            .textContent =
+            order.email || "â€”";
+
+
+        document.getElementById("paymentMethod")
+            .textContent =
+            formatPayment(order.payment);
+
+
+        document.getElementById("deliveryAddress")
+            .textContent =
+            [
+                order.address,
+                order.city,
+                order.pincode
+            ]
+            .filter(Boolean)
+            .join(", ");
+
+    }
+
+
+    /* ==========================================
+       PAYMENT TEXT
+       ========================================== */
+
+    function formatPayment(payment) {
+
+        if (payment === "COD") {
+            return "Cash on delivery";
+        }
+
+        if (payment === "UPI") {
+            return "UPI";
+        }
+
+        if (payment === "CARD") {
+            return "Card";
+        }
+
+        return "â€”";
+
+    }
+
+</script>
+
+
+</body>
+
+</html>

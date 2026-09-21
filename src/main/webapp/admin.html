@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Aishwarya Mart - Admin Panel</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: #f8f1e7;
+        color: #4b1f2a;
+        min-height: 100vh;
+    }
+
+    header {
+        background: #6d2638;
+        color: #fffaf3;
+        padding: 22px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    header h1 {
+        font-size: 25px;
+    }
+
+    header button {
+        background: #fffaf3;
+        color: #6d2638;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .container {
+        width: 92%;
+        max-width: 1250px;
+        margin: 35px auto;
+    }
+
+    .welcome {
+        margin-bottom: 25px;
+    }
+
+    .welcome h2 {
+        font-size: 30px;
+        margin-bottom: 7px;
+    }
+
+    .welcome p {
+        color: #7b5b63;
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 35px;
+    }
+
+    .card {
+        background: #fffaf3;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 5px 18px rgba(75, 31, 42, 0.08);
+    }
+
+    .card h3 {
+        font-size: 16px;
+        color: #80636b;
+        margin-bottom: 12px;
+    }
+
+    .card .number {
+        font-size: 34px;
+        font-weight: bold;
+        color: #6d2638;
+    }
+
+    section {
+        background: #fffaf3;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 18px rgba(75, 31, 42, 0.08);
+    }
+
+    section h2 {
+        margin-bottom: 18px;
+        font-size: 22px;
+    }
+
+    .section-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 18px;
+    }
+
+    .section-top h2 {
+        margin-bottom: 0;
+    }
+
+    .search-box {
+        width: 280px;
+        padding: 11px 14px;
+        border: 1px solid #ddc9c0;
+        border-radius: 8px;
+        background: white;
+        color: #4b1f2a;
+        outline: none;
+    }
+
+    .search-box:focus {
+        border-color: #6d2638;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 13px 12px;
+        text-align: left;
+        border-bottom: 1px solid #eadbd0;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+    th {
+        background: #f3e5d8;
+        color: #6d2638;
+    }
+
+    td {
+        color: #5b4048;
+    }
+
+    .role {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        background: #ead0d7;
+        color: #6d2638;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .status-select {
+        padding: 7px 9px;
+        border: 1px solid #d9c4bb;
+        border-radius: 7px;
+        background: white;
+        color: #5b4048;
+    }
+
+    .status-select:focus {
+        outline: none;
+        border-color: #6d2638;
+    }
+
+    .action-btn {
+        border: none;
+        padding: 8px 12px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-right: 5px;
+    }
+
+    .update-btn {
+        background: #6d2638;
+        color: white;
+    }
+
+    .update-btn:hover {
+        background: #541d2c;
+    }
+
+    .details-btn {
+        background: #ead0d7;
+        color: #6d2638;
+    }
+
+    .details-btn:hover {
+        background: #dfc0c9;
+    }
+
+    .delete-btn {
+        background: #9d3049;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 7px;
+        cursor: pointer;
+    }
+
+    .delete-btn:hover {
+        background: #7d2439;
+    }
+
+    .empty {
+        padding: 20px;
+        text-align: center;
+        color: #8a7177;
+    }
+
+    .message {
+        padding: 14px;
+        border-radius: 9px;
+        margin-bottom: 20px;
+        display: none;
+    }
+
+    .error {
+        background: #f6d5d5;
+        color: #8c2525;
+    }
+
+    .success {
+        background: #dcefdc;
+        color: #27632a;
+    }
+
+    /* ORDER DETAILS */
+
+    .details-box {
+        display: none;
+        background: #f8f1e7;
+        border: 1px solid #eadbd0;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .details-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .details-header h3 {
+        color: #6d2638;
+    }
+
+    .close-btn {
+        background: #6d2638;
+        color: white;
+        border: none;
+        padding: 7px 12px;
+        border-radius: 7px;
+        cursor: pointer;
+    }
+
+    .order-info {
+        margin-bottom: 15px;
+        color: #6d5260;
+    }
+
+    .order-items-table {
+        background: #fffaf3;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .product-image {
+        width: 55px;
+        height: 55px;
+        object-fit: cover;
+        border-radius: 7px;
+        background: #eadbd0;
+    }
+
+    @media (max-width: 900px) {
+
+        .cards {
+            grid-template-columns: 1fr;
+        }
+
+        .section-top {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-box {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 800px) {
+
+        header {
+            padding: 18px 20px;
+        }
+
+        .container {
+            width: 94%;
+        }
+
+        section {
+            padding: 18px;
+        }
+    }
+</style>
+
+
+</head>
+
+<body>
+
+<header>
+
+
+<h1>♡ Aishwarya Mart Admin</h1>
+
+<button onclick="logout()">
+    Logout
+</button>
+
+
+</header>
+
+<div class="container">
+
+
+<div class="welcome">
+
+    <h2>Admin Dashboard</h2>
+
+    <p>
+        Manage users, orders and product listings.
+    </p>
+
+</div>
+
+
+<div id="errorMessage" class="message error"></div>
+
+<div id="successMessage" class="message success"></div>
+
+
+<!-- DASHBOARD CARDS -->
+
+<div class="cards">
+
+    <div class="card">
+        <h3>Total Users</h3>
+        <div class="number" id="userCount">0</div>
+    </div>
+
+    <div class="card">
+        <h3>Total Orders</h3>
+        <div class="number" id="orderCount">0</div>
+    </div>
+
+    <div class="card">
+        <h3>Total Products</h3>
+        <div class="number" id="productCount">0</div>
+    </div>
+
+</div>
+
+
+<!-- USERS -->
+
+<section>
+
+    <div class="section-top">
+
+        <h2>👥 Users</h2>
+
+        <input
+            type="text"
+            id="userSearch"
+            class="search-box"
+            placeholder="Search users..."
+            oninput="filterUsers()"
+        >
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody id="usersTable">
+
+                <tr>
+                    <td colspan="4" class="empty">
+                        Loading users...
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+<!-- ORDERS -->
+
+<section>
+
+    <div class="section-top">
+
+        <h2>📦 Orders</h2>
+
+        <input
+            type="text"
+            id="orderSearch"
+            class="search-box"
+            placeholder="Search orders..."
+            oninput="filterOrders()"
+        >
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Order ID</th>
+                    <th>User ID</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody id="ordersTable">
+
+                <tr>
+                    <td colspan="6" class="empty">
+                        Loading orders...
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- ORDER DETAILS -->
+
+    <div id="orderDetails" class="details-box">
+
+        <div class="details-header">
+
+            <h3 id="detailsTitle">
+                Order Details
+            </h3>
+
+            <button
+                class="close-btn"
+                onclick="closeOrderDetails()">
+                Close
+            </button>
+
+        </div>
+
+
+        <div id="orderInfo" class="order-info"></div>
+
+
+        <div class="table-wrapper order-items-table">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Image</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="orderItemsTable">
+
+                    <tr>
+                        <td colspan="5" class="empty">
+                            Loading...
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- PRODUCTS -->
+
+<section>
+
+    <div class="section-top">
+
+        <h2>🛍️ Product Moderation</h2>
+
+        <input
+            type="text"
+            id="productSearch"
+            class="search-box"
+            placeholder="Search products..."
+            oninput="filterProducts()"
+        >
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Seller ID</th>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody id="productsTable">
+
+                <tr>
+                    <td colspan="7" class="empty">
+                        Loading products...
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+</div>
+
+<script>
+
+    const BASE_URL = "admin";
+
+
+    let allUsers = [];
+    let allOrders = [];
+    let allProducts = [];
+
+
+    /* =========================
+       LOAD USERS
+    ========================= */
+
+    async function loadUsers() {
+
+        try {
+
+            const response =
+                await fetch(BASE_URL + "?action=users");
+
+            if (!response.ok) {
+                throw new Error("Could not load users");
+            }
+
+            allUsers = await response.json();
+
+            document.getElementById("userCount")
+                .textContent = allUsers.length;
+
+            renderUsers(allUsers);
+
+        } catch (error) {
+
+            showError(error.message);
+
+        }
+    }
+
+
+    function renderUsers(users) {
+
+        const table =
+            document.getElementById("usersTable");
+
+
+        if (users.length === 0) {
+
+            table.innerHTML =
+                `<tr>
+                    <td colspan="4" class="empty">
+                        No users found
+                    </td>
+                </tr>`;
+
+            return;
+        }
+
+
+        table.innerHTML =
+            users.map(user => {
+
+                return `
+                    <tr>
+
+                        <td>${user.id}</td>
+
+                        <td>
+                            ${escapeHtml(user.name)}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(user.email)}
+                        </td>
+
+                        <td>
+                            <span class="role">
+                                ${escapeHtml(user.role)}
+                            </span>
+                        </td>
+
+                    </tr>
+                `;
+
+            }).join("");
+
+    }
+
+
+    function filterUsers() {
+
+        const search =
+            document.getElementById("userSearch")
+                .value
+                .toLowerCase()
+                .trim();
+
+
+        const filtered =
+            allUsers.filter(user =>
+
+                String(user.id)
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(user.name)
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(user.email)
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(user.role)
+                    .toLowerCase()
+                    .includes(search)
+
+            );
+
+
+        renderUsers(filtered);
+
+    }
+
+
+    /* =========================
+       LOAD ORDERS
+    ========================= */
+
+    async function loadOrders() {
+
+        try {
+
+            const response =
+                await fetch(BASE_URL + "?action=orders");
+
+            if (!response.ok) {
+                throw new Error("Could not load orders");
+            }
+
+            allOrders = await response.json();
+
+            document.getElementById("orderCount")
+                .textContent = allOrders.length;
+
+            renderOrders(allOrders);
+
+        } catch (error) {
+
+            showError(error.message);
+
+        }
+    }
+
+
+    function renderOrders(orders) {
+
+        const table =
+            document.getElementById("ordersTable");
+
+
+        if (orders.length === 0) {
+
+            table.innerHTML =
+                `<tr>
+                    <td colspan="6" class="empty">
+                        No orders found
+                    </td>
+                </tr>`;
+
+            return;
+        }
+
+
+        table.innerHTML =
+            orders.map(order => {
+
+                const status =
+                    escapeHtml(order.status || "PENDING");
+
+
+                return `
+                    <tr>
+
+                        <td>
+                            #${order.id}
+                        </td>
+
+                        <td>
+                            ${order.userId}
+                        </td>
+
+                        <td>
+                            ₹${Number(order.totalAmount).toFixed(2)}
+                        </td>
+
+                        <td>
+
+                            <select
+                                id="status-${order.id}"
+                                class="status-select">
+
+                                <option value="PENDING"
+                                    ${status === "PENDING" ? "selected" : ""}>
+                                    PENDING
+                                </option>
+
+                                <option value="CONFIRMED"
+                                    ${status === "CONFIRMED" ? "selected" : ""}>
+                                    CONFIRMED
+                                </option>
+
+                                <option value="SHIPPED"
+                                    ${status === "SHIPPED" ? "selected" : ""}>
+                                    SHIPPED
+                                </option>
+
+                                <option value="DELIVERED"
+                                    ${status === "DELIVERED" ? "selected" : ""}>
+                                    DELIVERED
+                                </option>
+
+                                <option value="CANCELLED"
+                                    ${status === "CANCELLED" ? "selected" : ""}>
+                                    CANCELLED
+                                </option>
+
+                            </select>
+
+                        </td>
+
+                        <td>
+                            ${formatDate(order.createdAt)}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="action-btn update-btn"
+                                onclick="updateOrderStatus(${order.id})">
+
+                                Update
+
+                            </button>
+
+
+                            <button
+                                class="action-btn details-btn"
+                                onclick="showOrderDetails(${order.id})">
+
+                                Details
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+                `;
+
+            }).join("");
+
+    }
+
+
+    function filterOrders() {
+
+        const search =
+            document.getElementById("orderSearch")
+                .value
+                .toLowerCase()
+                .trim();
+
+
+        const filtered =
+            allOrders.filter(order =>
+
+                String(order.id)
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(order.userId)
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(order.status)
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(order.totalAmount)
+                    .toLowerCase()
+                    .includes(search)
+
+            );
+
+
+        renderOrders(filtered);
+
+    }
+
+
+    /* =========================
+       UPDATE ORDER STATUS
+    ========================= */
+
+    async function updateOrderStatus(orderId) {
+
+        const select =
+            document.getElementById("status-" + orderId);
+
+
+        if (!select) {
+
+            showError("Could not find order status.");
+
+            return;
+        }
+
+
+        const status =
+            select.value;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    BASE_URL +
+                    "?action=update-order-status&id=" +
+                    encodeURIComponent(orderId) +
+                    "&status=" +
+                    encodeURIComponent(status),
+                    {
+                        method: "POST"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Could not update order status"
+                );
+
+            }
+
+
+            const result =
+                await response.json();
+
+
+            if (!result.success) {
+
+                throw new Error(
+                    "Order status was not updated"
+                );
+
+            }
+
+
+            const order =
+                allOrders.find(
+                    item => item.id === orderId
+                );
+
+
+            if (order) {
+                order.status = status;
+            }
+
+
+            showSuccess(
+                "Order #" +
+                orderId +
+                " updated to " +
+                status
+            );
+
+
+            await loadOrders();
+
+        } catch (error) {
+
+            showError(error.message);
+
+        }
+
+    }
+
+
+    /* =========================
+       ORDER DETAILS
+    ========================= */
+
+    async function showOrderDetails(orderId) {
+
+        const box =
+            document.getElementById("orderDetails");
+
+        const itemsTable =
+            document.getElementById("orderItemsTable");
+
+        const info =
+            document.getElementById("orderInfo");
+
+
+        const order =
+            allOrders.find(
+                item => item.id === orderId
+            );
+
+
+        box.style.display = "block";
+
+
+        document.getElementById("detailsTitle")
+            .textContent =
+                "Order #" + orderId + " Details";
+
+
+        if (order) {
+
+            info.innerHTML =
+                `
+                <strong>User ID:</strong> ${order.userId}
+                &nbsp;&nbsp; | &nbsp;&nbsp;
+                <strong>Total:</strong>
+                ₹${Number(order.totalAmount).toFixed(2)}
+                &nbsp;&nbsp; | &nbsp;&nbsp;
+                <strong>Status:</strong>
+                ${escapeHtml(order.status)}
+                `;
+
+        }
+
+
+        itemsTable.innerHTML =
+            `<tr>
+                <td colspan="5" class="empty">
+                    Loading order products...
+                </td>
+            </tr>`;
+
+
+        box.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+
+        try {
+
+            const response =
+                await fetch(
+                    BASE_URL +
+                    "?action=order-items&id=" +
+                    encodeURIComponent(orderId)
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Could not load order details"
+                );
+
+            }
+
+
+            const items =
+                await response.json();
+
+
+            if (!items || items.length === 0) {
+
+                itemsTable.innerHTML =
+                    `<tr>
+                        <td colspan="5" class="empty">
+                            No products found in this order.
+                        </td>
+                    </tr>`;
+
+                return;
+            }
+
+
+            itemsTable.innerHTML =
+                items.map(item => {
+
+                    const price =
+                        Number(item.price || 0);
+
+                    const quantity =
+                        Number(item.quantity || 0);
+
+                    const subtotal =
+                        price * quantity;
+
+
+                    let imageCell = "-";
+
+
+                    if (item.imageUrl) {
+
+                        imageCell =
+                            `
+                            <img
+                                src="${escapeHtml(item.imageUrl)}"
+                                class="product-image"
+                                alt="Product"
+                                onerror="this.style.display='none'"
+                            >
+                            `;
+
+                    }
+
+
+                    return `
+                        <tr>
+
+                            <td>
+                                ${imageCell}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    item.productName ||
+                                    "Product #" + item.productId
+                                )}
+                            </td>
+
+                            <td>
+                                ${quantity}
+                            </td>
+
+                            <td>
+                                ₹${price.toFixed(2)}
+                            </td>
+
+                            <td>
+                                ₹${subtotal.toFixed(2)}
+                            </td>
+
+                        </tr>
+                    `;
+
+                }).join("");
+
+
+        } catch (error) {
+
+            itemsTable.innerHTML =
+                `<tr>
+                    <td colspan="5" class="empty">
+                        ${escapeHtml(error.message)}
+                    </td>
+                </tr>`;
+
+        }
+
+    }
+
+
+    function closeOrderDetails() {
+
+        document.getElementById("orderDetails")
+            .style.display = "none";
+
+    }
+
+
+    /* =========================
+       LOAD PRODUCTS
+    ========================= */
+
+    async function loadProducts() {
+
+        try {
+
+            const response =
+                await fetch(BASE_URL + "?action=products");
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Could not load products"
+                );
+
+            }
+
+
+            allProducts =
+                await response.json();
+
+
+            document.getElementById("productCount")
+                .textContent =
+                    allProducts.length;
+
+
+            renderProducts(allProducts);
+
+
+        } catch (error) {
+
+            showError(error.message);
+
+        }
+
+    }
+
+
+    function renderProducts(products) {
+
+        const table =
+            document.getElementById("productsTable");
+
+
+        if (products.length === 0) {
+
+            table.innerHTML =
+                `<tr>
+                    <td colspan="7" class="empty">
+                        No products found
+                    </td>
+                </tr>`;
+
+            return;
+
+        }
+
+
+        table.innerHTML =
+            products.map(product => {
+
+                return `
+                    <tr>
+
+                        <td>
+                            ${product.id}
+                        </td>
+
+                        <td>
+                            ${product.sellerId}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(product.name)}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(product.category)}
+                        </td>
+
+                        <td>
+                            ₹${Number(product.price).toFixed(2)}
+                        </td>
+
+                        <td>
+                            ${product.stockQty}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="delete-btn"
+                                onclick="deleteProduct(${product.id})">
+
+                                Remove
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+                `;
+
+            }).join("");
+
+    }
+
+
+    function filterProducts() {
+
+        const search =
+            document.getElementById("productSearch")
+                .value
+                .toLowerCase()
+                .trim();
+
+
+        const filtered =
+            allProducts.filter(product =>
+
+                String(product.id)
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(product.sellerId)
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(product.name)
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(product.category)
+                    .toLowerCase()
+                    .includes(search)
+
+            );
+
+
+        renderProducts(filtered);
+
+    }
+
+
+    /* =========================
+       DELETE PRODUCT
+    ========================= */
+
+    async function deleteProduct(productId) {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to remove this product?"
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    BASE_URL +
+                    "?action=delete-product&id=" +
+                    encodeURIComponent(productId),
+                    {
+                        method: "POST"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Could not remove product"
+                );
+
+            }
+
+
+            const result =
+                await response.json();
+
+
+            if (!result.success) {
+
+                throw new Error(
+                    "Product could not be removed"
+                );
+
+            }
+
+
+            showSuccess(
+                "Product removed successfully."
+            );
+
+
+            await loadProducts();
+
+
+        } catch (error) {
+
+            showError(error.message);
+
+        }
+
+    }
+
+
+    /* =========================
+       DATE
+    ========================= */
+
+    function formatDate(dateText) {
+
+        if (!dateText) {
+            return "-";
+        }
+
+
+        const date =
+            new Date(dateText);
+
+
+        if (Number.isNaN(date.getTime())) {
+            return dateText;
+        }
+
+
+        return date.toLocaleString();
+
+    }
+
+
+    /* =========================
+       HTML ESCAPE
+    ========================= */
+
+    function escapeHtml(value) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+            return "";
+        }
+
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    /* =========================
+       MESSAGES
+    ========================= */
+
+    function showError(message) {
+
+        const errorBox =
+            document.getElementById("errorMessage");
+
+        const successBox =
+            document.getElementById("successMessage");
+
+
+        successBox.style.display = "none";
+
+        errorBox.textContent = message;
+        errorBox.style.display = "block";
+
+
+        setTimeout(() => {
+
+            errorBox.style.display = "none";
+
+        }, 4000);
+
+    }
+
+
+    function showSuccess(message) {
+
+        const errorBox =
+            document.getElementById("errorMessage");
+
+        const successBox =
+            document.getElementById("successMessage");
+
+
+        errorBox.style.display = "none";
+
+        successBox.textContent = message;
+        successBox.style.display = "block";
+
+
+        setTimeout(() => {
+
+            successBox.style.display = "none";
+
+        }, 3000);
+
+    }
+
+
+    /* =========================
+       LOGOUT
+    ========================= */
+
+    function logout() {
+
+        window.location.href =
+            "auth?action=logout";
+
+    }
+
+
+    /* =========================
+       START
+    ========================= */
+
+    loadUsers();
+    loadOrders();
+    loadProducts();
+
+</script>
+
+</body>
+</html>
+

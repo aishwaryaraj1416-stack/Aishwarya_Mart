@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>Seller Dashboard | Aishwarya Mart</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+<style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        --burgundy: #8f0000;
+        --burgundy-dark: #650000;
+        --light-burgundy: #aa2424;
+        --cream: #faf6ee;
+        --warm-white: #fffdf9;
+        --beige: #eee5d5;
+        --soft: #f4ece2;
+        --text: #24191a;
+        --muted: #756b6b;
+        --border: #ded6d0;
+        --white: #ffffff;
+        --green: #49634d;
+    }
+
+    body {
+        min-height: 100vh;
+        font-family: "Inter", sans-serif;
+        background: var(--cream);
+        color: var(--text);
+    }
+
+    /* ================= HEADER ================= */
+
+    header {
+        height: 82px;
+        background: var(--warm-white);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 6%;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+    }
+
+    .logo img {
+        width: 105px;
+        height: 70px;
+        object-fit: contain;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+    }
+
+    .header-link {
+        color: var(--text);
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+    }
+
+    .header-link:hover {
+        color: var(--burgundy);
+    }
+
+    .logout {
+        border: 1px solid var(--burgundy);
+        padding: 11px 18px;
+        color: var(--burgundy);
+    }
+
+    .logout:hover {
+        background: var(--burgundy);
+        color: var(--white);
+    }
+
+
+    /* ================= PAGE ================= */
+
+    .page {
+        max-width: 1250px;
+        margin: 0 auto;
+        padding: 55px 30px 80px;
+    }
+
+    .page-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 40px;
+        gap: 20px;
+    }
+
+    .eyebrow {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2.5px;
+        color: var(--burgundy);
+        margin-bottom: 12px;
+    }
+
+    .page-heading h1 {
+        font-family: "DM Serif Display", serif;
+        font-size: clamp(42px, 5vw, 62px);
+        font-weight: 400;
+        line-height: 1;
+    }
+
+    .page-heading p {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+        margin-top: 12px;
+    }
+
+
+    /* ================= ADD BUTTON ================= */
+
+    .add-button {
+        border: none;
+        background: var(--burgundy);
+        color: var(--white);
+        padding: 15px 24px;
+        font-family: "Inter", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .add-button:hover {
+        background: var(--burgundy-dark);
+    }
+
+
+    /* ================= STATS ================= */
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 45px;
+    }
+
+    .stat-card {
+        background: var(--warm-white);
+        border: 1px solid var(--border);
+        padding: 25px;
+    }
+
+    .stat-card span {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+    }
+
+    .stat-card strong {
+        font-family: "DM Serif Display", serif;
+        font-size: 36px;
+        font-weight: 400;
+    }
+
+
+    /* ================= SECTION ================= */
+
+    .section-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+    }
+
+    .section-title h2 {
+        font-family: "DM Serif Display", serif;
+        font-size: 30px;
+        font-weight: 400;
+    }
+
+    .section-title span {
+        color: var(--muted);
+        font-size: 11px;
+    }
+
+
+    /* ================= TABLE ================= */
+
+    .table-wrapper {
+        background: var(--warm-white);
+        border: 1px solid var(--border);
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 750px;
+    }
+
+    th {
+        background: var(--soft);
+        padding: 16px 18px;
+        text-align: left;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: var(--muted);
+    }
+
+    td {
+        padding: 18px;
+        border-top: 1px solid var(--border);
+        font-size: 13px;
+        vertical-align: middle;
+    }
+
+    .product-name {
+        font-weight: 600;
+    }
+
+    .product-category {
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .price {
+        font-weight: 700;
+    }
+
+    .stock {
+        font-weight: 600;
+    }
+
+    .stock.low {
+        color: var(--burgundy);
+    }
+
+    .stock.good {
+        color: var(--green);
+    }
+
+
+    /* ================= ACTIONS ================= */
+
+    .actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-button {
+        border: 1px solid var(--border);
+        background: transparent;
+        padding: 8px 12px;
+        font-family: "Inter", sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        cursor: pointer;
+    }
+
+    .action-button:hover {
+        border-color: var(--burgundy);
+        color: var(--burgundy);
+    }
+
+    .delete-button:hover {
+        background: #f4e0dc;
+    }
+
+
+    /* ================= EMPTY ================= */
+
+    .empty-state {
+        display: none;
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--muted);
+    }
+
+    .empty-state h3 {
+        font-family: "DM Serif Display", serif;
+        font-size: 28px;
+        font-weight: 400;
+        color: var(--text);
+        margin-bottom: 8px;
+    }
+
+
+    /* ================= MODAL ================= */
+
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(36, 25, 26, 0.55);
+        z-index: 500;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal.active {
+        display: flex;
+    }
+
+    .modal-box {
+        width: 100%;
+        max-width: 520px;
+        background: var(--warm-white);
+        padding: 35px;
+        position: relative;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .close-button {
+        position: absolute;
+        right: 22px;
+        top: 20px;
+        border: none;
+        background: none;
+        font-size: 24px;
+        color: var(--muted);
+        cursor: pointer;
+    }
+
+    .modal-header {
+        margin-bottom: 28px;
+    }
+
+    .modal-header h2 {
+        font-family: "DM Serif Display", serif;
+        font-size: 34px;
+        font-weight: 400;
+    }
+
+    .modal-header p {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 6px;
+    }
+
+
+    /* ================= FORM ================= */
+
+    .form-group {
+        margin-bottom: 17px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        border: 1px solid var(--border);
+        background: var(--cream);
+        padding: 13px 14px;
+        font-family: "Inter", sans-serif;
+        font-size: 13px;
+        color: var(--text);
+        outline: none;
+    }
+
+    .form-group input {
+        height: 48px;
+    }
+
+    .form-group textarea {
+        min-height: 90px;
+        resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        border-color: var(--burgundy);
+        background: var(--white);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .form-submit {
+        width: 100%;
+        height: 52px;
+        border: none;
+        background: var(--burgundy);
+        color: var(--white);
+        font-family: "Inter", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.3px;
+        text-transform: uppercase;
+        cursor: pointer;
+        margin-top: 5px;
+    }
+
+    .form-submit:hover {
+        background: var(--burgundy-dark);
+    }
+
+
+    /* ================= MESSAGE ================= */
+
+    .message {
+        display: none;
+        padding: 12px 14px;
+        margin-bottom: 18px;
+        background: #f1e2df;
+        color: var(--burgundy-dark);
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+
+    /* ================= FOOTER ================= */
+
+    footer {
+        background: var(--burgundy-dark);
+        color: #eadbdd;
+        padding: 30px 6%;
+        text-align: center;
+        font-size: 11px;
+        letter-spacing: 0.8px;
+    }
+
+
+    /* ================= MOBILE ================= */
+
+    @media (max-width: 800px) {
+
+        header {
+            padding: 0 20px;
+        }
+
+        .header-link {
+            display: none;
+        }
+
+        .page {
+            padding: 40px 18px 60px;
+        }
+
+        .page-heading {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .stats {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .modal-box {
+            padding: 28px 22px;
+        }
+
+    }
+
+</style>
+
+
+</head>
+
+<body>
+
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <a href="index.html" class="logo">
+
+        <img
+            src="https://i.postimg.cc/KYvtyfcX/Whats-App-Image-2026-09-15-at-2-03-03-PM.jpg"
+            alt="Aishwarya Mart">
+
+    </a>
+
+
+    <div class="header-right">
+
+        <a href="index.html" class="header-link">
+            View Store
+        </a>
+
+        <a href="orders.html" class="header-link">
+            Orders
+        </a>
+
+        <a href="login.html" class="header-link logout">
+            Logout
+        </a>
+
+    </div>
+
+</header>
+
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="page">
+
+
+    <!-- HEADING -->
+
+    <div class="page-heading">
+
+        <div>
+
+            <p class="eyebrow">
+                SELLER DASHBOARD
+            </p>
+
+            <h1>
+                Your store.
+            </h1>
+
+            <p>
+                Manage your products and keep your Aishwarya Mart
+                collection up to date.
+            </p>
+
+        </div>
+
+
+        <button
+            class="add-button"
+            onclick="openAddProduct()">
+
+            + Add product
+
+        </button>
+
+    </div>
+
+
+
+    <!-- ================= STATS ================= -->
+
+    <section class="stats">
+
+        <div class="stat-card">
+
+            <span>
+                Total products
+            </span>
+
+            <strong id="totalProducts">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                Products in stock
+            </span>
+
+            <strong id="inStock">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                Low stock
+            </span>
+
+            <strong id="lowStock">
+                0
+            </strong>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================= PRODUCTS ================= -->
+
+    <section>
+
+        <div class="section-title">
+
+            <h2>
+                Your products
+            </h2>
+
+            <span id="productCount">
+                0 products
+            </span>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Product
+                        </th>
+
+                        <th>
+                            Category
+                        </th>
+
+                        <th>
+                            Price
+                        </th>
+
+                        <th>
+                            Stock
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="productTable">
+
+                </tbody>
+
+            </table>
+
+
+            <div
+                class="empty-state"
+                id="emptyState">
+
+                <h3>
+                    No products yet.
+                </h3>
+
+                <p>
+                    Add your first product to start building
+                    your store.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+<!-- ================= ADD / EDIT MODAL ================= -->
+
+<div
+    class="modal"
+    id="productModal">
+
+    <div class="modal-box">
+
+
+        <button
+            class="close-button"
+            onclick="closeProductModal()">
+
+            Ã—
+
+        </button>
+
+
+        <div class="modal-header">
+
+            <h2 id="modalTitle">
+                Add product.
+            </h2>
+
+            <p>
+                Add the details of your product below.
+            </p>
+
+        </div>
+
+
+        <div
+            class="message"
+            id="formMessage">
+        </div>
+
+
+        <form id="productForm">
+
+
+            <div class="form-group">
+
+                <label for="productName">
+                    Product name
+                </label>
+
+                <input
+                    type="text"
+                    id="productName"
+                    required
+                    placeholder="Enter product name">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="description">
+                    Description
+                </label>
+
+                <textarea
+                    id="description"
+                    placeholder="Describe your product"></textarea>
+
+            </div>
+
+
+            <div class="form-row">
+
+
+                <div class="form-group">
+
+                    <label for="price">
+                        Price
+                    </label>
+
+                    <input
+                        type="number"
+                        id="price"
+                        min="0"
+                        step="0.01"
+                        required
+                        placeholder="1499">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="stock">
+                        Stock quantity
+                    </label>
+
+                    <input
+                        type="number"
+                        id="stock"
+                        min="0"
+                        required
+                        placeholder="20">
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="category">
+                    Category
+                </label>
+
+                <select id="category" required>
+
+                    <option value="">
+                        Select category
+                    </option>
+
+                    <option value="Fashion">
+                        Fashion
+                    </option>
+
+                    <option value="Electronics">
+                        Electronics
+                    </option>
+
+                    <option value="Beauty">
+                        Beauty
+                    </option>
+
+                    <option value="Home">
+                        Home
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="imageUrl">
+                    Image URL
+                </label>
+
+                <input
+                    type="url"
+                    id="imageUrl"
+                    placeholder="https://example.com/image.jpg">
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="form-submit">
+
+                Save product
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    Aishwarya Mart Â· Seller Dashboard
+
+</footer>
+
+
+
+<script>
+
+    /* ==========================================
+       DEMO PRODUCT DATA
+       ========================================== */
+
+    let products = [
+        {
+            id: 1,
+            name: "Elegant Handbag",
+            description: "Stylish and spacious handbag for everyday use.",
+            price: 1499,
+            stock: 20,
+            category: "Fashion",
+            imageUrl: ""
+        },
+        {
+            id: 2,
+            name: "Classic Watch",
+            description: "Elegant everyday watch.",
+            price: 2299,
+            stock: 12,
+            category: "Fashion",
+            imageUrl: ""
+        },
+        {
+            id: 3,
+            name: "Wireless Headphones",
+            description: "Comfortable wireless headphones.",
+            price: 1999,
+            stock: 7,
+            category: "Electronics",
+            imageUrl: ""
+        }
+    ];
+
+
+    let editingId = null;
+
+
+    /* ==========================================
+       RENDER PRODUCTS
+       ========================================== */
+
+    function renderProducts() {
+
+        const table =
+            document.getElementById("productTable");
+
+        const empty =
+            document.getElementById("emptyState");
+
+
+        table.innerHTML = "";
+
+
+        if (products.length === 0) {
+
+            empty.style.display = "block";
+
+        } else {
+
+            empty.style.display = "none";
+
+
+            products.forEach(function(product) {
+
+                const row =
+                    document.createElement("tr");
+
+
+                const stockClass =
+                    product.stock <= 5
+                        ? "low"
+                        : "good";
+
+
+                row.innerHTML = `
+
+                    <td>
+                        <div class="product-name">
+                            ${escapeHtml(product.name)}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="product-category">
+                            ${escapeHtml(product.category)}
+                        </div>
+                    </td>
+
+                    <td>
+                        <span class="price">
+                            â‚¹${Number(product.price).toFixed(2)}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="stock ${stockClass}">
+                            ${product.stock}
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <div class="actions">
+
+                            <button
+                                class="action-button"
+                                onclick="editProduct(${product.id})">
+
+                                Edit
+
+                            </button>
+
+                            <button
+                                class="action-button delete-button"
+                                onclick="deleteProduct(${product.id})">
+
+                                Delete
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                `;
+
+
+                table.appendChild(row);
+
+            });
+
+        }
+
+
+        updateStats();
+
+    }
+
+
+    /* ==========================================
+       STATS
+       ========================================== */
+
+    function updateStats() {
+
+        const total =
+            products.length;
+
+
+        const inStock =
+            products.filter(function(product) {
+
+                return product.stock > 0;
+
+            }).length;
+
+
+        const lowStock =
+            products.filter(function(product) {
+
+                return product.stock > 0 &&
+                       product.stock <= 5;
+
+            }).length;
+
+
+        document.getElementById("totalProducts")
+            .textContent = total;
+
+
+        document.getElementById("inStock")
+            .textContent = inStock;
+
+
+        document.getElementById("lowStock")
+            .textContent = lowStock;
+
+
+        document.getElementById("productCount")
+            .textContent =
+            total === 1
+                ? "1 product"
+                : total + " products";
+
+    }
+
+
+    /* ==========================================
+       OPEN ADD PRODUCT
+       ========================================== */
+
+    function openAddProduct() {
+
+        editingId = null;
+
+        document.getElementById("modalTitle")
+            .textContent = "Add product.";
+
+        document.getElementById("productForm")
+            .reset();
+
+        document.getElementById("formMessage")
+            .style.display = "none";
+
+        document.getElementById("productModal")
+            .classList.add("active");
+
+    }
+
+
+    /* ==========================================
+       CLOSE MODAL
+       ========================================== */
+
+    function closeProductModal() {
+
+        document.getElementById("productModal")
+            .classList.remove("active");
+
+    }
+
+
+    /* ==========================================
+       EDIT PRODUCT
+       ========================================== */
+
+    function editProduct(id) {
+
+        const product =
+            products.find(function(item) {
+
+                return item.id === id;
+
+            });
+
+
+        if (!product) {
+            return;
+        }
+
+
+        editingId = id;
+
+
+        document.getElementById("modalTitle")
+            .textContent = "Edit product.";
+
+
+        document.getElementById("productName")
+            .value = product.name;
+
+
+        document.getElementById("description")
+            .value = product.description;
+
+
+        document.getElementById("price")
+            .value = product.price;
+
+
+        document.getElementById("stock")
+            .value = product.stock;
+
+
+        document.getElementById("category")
+            .value = product.category;
+
+
+        document.getElementById("imageUrl")
+            .value = product.imageUrl || "";
+
+
+        document.getElementById("formMessage")
+            .style.display = "none";
+
+
+        document.getElementById("productModal")
+            .classList.add("active");
+
+    }
+
+
+    /* ==========================================
+       DELETE PRODUCT
+       ========================================== */
+
+    function deleteProduct(id) {
+
+        const product =
+            products.find(function(item) {
+
+                return item.id === id;
+
+            });
+
+
+        if (!product) {
+            return;
+        }
+
+
+        const confirmed =
+            confirm(
+                "Delete \"" +
+                product.name +
+                "\"?"
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        products =
+            products.filter(function(item) {
+
+                return item.id !== id;
+
+            });
+
+
+        renderProducts();
+
+    }
+
+
+    /* ==========================================
+       SAVE PRODUCT
+       ========================================== */
+
+    document.getElementById("productForm")
+        .addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
+
+
+                const name =
+                    document.getElementById("productName")
+                        .value.trim();
+
+
+                const description =
+                    document.getElementById("description")
+                        .value.trim();
+
+
+                const price =
+                    Number(
+                        document.getElementById("price")
+                            .value
+                    );
+
+
+                const stock =
+                    Number(
+                        document.getElementById("stock")
+                            .value
+                    );
+
+
+                const category =
+                    document.getElementById("category")
+                        .value;
+
+
+                const imageUrl =
+                    document.getElementById("imageUrl")
+                        .value.trim();
+
+
+                if (!name || !category) {
+
+                    showFormMessage(
+                        "Please fill in all required fields."
+                    );
+
+                    return;
+
+                }
+
+
+                if (price < 0 || stock < 0) {
+
+                    showFormMessage(
+                        "Price and stock cannot be negative."
+                    );
+
+                    return;
+
+                }
+
+
+                /* EDIT */
+
+                if (editingId !== null) {
+
+                    const product =
+                        products.find(function(item) {
+
+                            return item.id === editingId;
+
+                        });
+
+
+                    if (product) {
+
+                        product.name =
+                            name;
+
+                        product.description =
+                            description;
+
+                        product.price =
+                            price;
+
+                        product.stock =
+                            stock;
+
+                        product.category =
+                            category;
+
+                        product.imageUrl =
+                            imageUrl;
+
+                    }
+
+                }
+
+
+                /* ADD */
+
+                else {
+
+                    products.push({
+
+                        id:
+                            Date.now(),
+
+                        name:
+                            name,
+
+                        description:
+                            description,
+
+                        price:
+                            price,
+
+                        stock:
+                            stock,
+
+                        category:
+                            category,
+
+                        imageUrl:
+                            imageUrl
+
+                    });
+
+                }
+
+
+                renderProducts();
+
+                closeProductModal();
+
+            }
+        );
+
+
+    /* ==========================================
+       FORM MESSAGE
+       ========================================== */
+
+    function showFormMessage(text) {
+
+        const message =
+            document.getElementById("formMessage");
+
+
+        message.textContent =
+            text;
+
+
+        message.style.display =
+            "block";
+
+    }
+
+
+    /* ==========================================
+       ESCAPE HTML
+       ========================================== */
+
+    function escapeHtml(value) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent =
+            value;
+
+        return div.innerHTML;
+
+    }
+
+
+    /* ==========================================
+       CLOSE MODAL WHEN CLICKING OUTSIDE
+       ========================================== */
+
+    document.getElementById("productModal")
+        .addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    event.target ===
+                    this
+                ) {
+
+                    closeProductModal();
+
+                }
+
+            }
+        );
+
+
+    /* ==========================================
+       INITIAL LOAD
+       ========================================== */
+
+    renderProducts();
+
+</script>
+
+
+</body>
+
+</html>

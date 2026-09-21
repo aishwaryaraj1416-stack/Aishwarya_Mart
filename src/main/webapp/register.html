@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>Register | Aishwarya Mart</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+<style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        --burgundy: #8f0000;
+        --burgundy-dark: #650000;
+        --cream: #faf6ee;
+        --warm-white: #fffdf9;
+        --beige: #eee5d5;
+        --text: #24191a;
+        --muted: #756b6b;
+        --border: #ded6d0;
+        --white: #ffffff;
+    }
+
+    body {
+        min-height: 100vh;
+        font-family: "Inter", sans-serif;
+        background: var(--cream);
+        color: var(--text);
+    }
+
+    .page {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+    }
+
+
+    /* ================= LEFT ================= */
+
+    .intro {
+        background: var(--burgundy);
+        color: var(--white);
+        padding: 70px 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .logo {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        text-decoration: none;
+    }
+
+    .logo img {
+        width: 110px;
+        height: 80px;
+        object-fit: contain;
+        display: block;
+    }
+
+    .intro-content {
+        max-width: 500px;
+        padding-bottom: 60px;
+    }
+
+    .eyebrow {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2.5px;
+        margin-bottom: 22px;
+        opacity: 0.75;
+    }
+
+    .intro h1 {
+        font-family: "DM Serif Display", serif;
+        font-size: clamp(50px, 5vw, 76px);
+        font-weight: 400;
+        line-height: 0.98;
+        letter-spacing: -2px;
+        margin-bottom: 28px;
+    }
+
+    .intro h1 em {
+        font-style: italic;
+        color: #f0d1c8;
+    }
+
+    .intro-text {
+        max-width: 390px;
+        color: #eadbdd;
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .intro-bottom {
+        font-size: 11px;
+        letter-spacing: 1.5px;
+        color: #dbc1c5;
+        text-transform: uppercase;
+    }
+
+
+    /* ================= RIGHT ================= */
+
+    .form-side {
+        background: var(--warm-white);
+        padding: 50px 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-wrapper {
+        width: 100%;
+        max-width: 440px;
+    }
+
+    .mobile-logo {
+        display: none;
+    }
+
+    .form-header {
+        margin-bottom: 28px;
+    }
+
+    .form-header h2 {
+        font-family: "DM Serif Display", serif;
+        font-size: 48px;
+        font-weight: 400;
+        line-height: 1;
+        margin-bottom: 12px;
+    }
+
+    .form-header p {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+
+    /* ================= FORM ================= */
+
+    .form-group {
+        margin-bottom: 17px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.3px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        height: 50px;
+        border: 1px solid var(--border);
+        background: var(--cream);
+        padding: 0 16px;
+        font-family: "Inter", sans-serif;
+        font-size: 14px;
+        color: var(--text);
+        outline: none;
+        transition: 0.2s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: var(--burgundy);
+        background: var(--white);
+    }
+
+    .role-group {
+        margin-bottom: 20px;
+    }
+
+    .role-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .role-option {
+        position: relative;
+    }
+
+    .role-option input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .role-option label {
+        height: 48px;
+        border: 1px solid var(--border);
+        background: var(--cream);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        transition: 0.2s ease;
+    }
+
+    .role-option input:checked + label {
+        background: var(--burgundy);
+        border-color: var(--burgundy);
+        color: var(--white);
+    }
+
+    .role-option label:hover {
+        border-color: var(--burgundy);
+    }
+
+
+    /* ================= TERMS ================= */
+
+    .terms {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        margin: 4px 0 22px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    .terms input {
+        margin-top: 2px;
+        accent-color: var(--burgundy);
+    }
+
+
+    /* ================= BUTTON ================= */
+
+    .submit-button {
+        width: 100%;
+        height: 54px;
+        border: none;
+        background: var(--burgundy);
+        color: var(--white);
+        font-family: "Inter", sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .submit-button:hover {
+        background: var(--burgundy-dark);
+    }
+
+
+    /* ================= MESSAGE ================= */
+
+    .message {
+        display: none;
+        margin-bottom: 18px;
+        padding: 12px 14px;
+        font-size: 12px;
+        line-height: 1.5;
+        background: #f1e2df;
+        color: var(--burgundy-dark);
+    }
+
+
+    /* ================= DIVIDER ================= */
+
+    .divider {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin: 24px 0;
+        color: #9b9390;
+        font-size: 10px;
+        letter-spacing: 1px;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: "";
+        height: 1px;
+        background: var(--border);
+        flex: 1;
+    }
+
+
+    /* ================= LOGIN LINK ================= */
+
+    .login-link {
+        display: block;
+        text-align: center;
+        border: 1px solid var(--border);
+        height: 52px;
+        line-height: 50px;
+        color: var(--text);
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        transition: 0.2s ease;
+    }
+
+    .login-link:hover {
+        border-color: var(--burgundy);
+        color: var(--burgundy);
+    }
+
+    .back-home {
+        display: block;
+        text-align: center;
+        margin-top: 22px;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 12px;
+    }
+
+    .back-home:hover {
+        color: var(--burgundy);
+    }
+
+
+    /* ================= MOBILE ================= */
+
+    @media (max-width: 850px) {
+
+        .page {
+            grid-template-columns: 1fr;
+        }
+
+        .intro {
+            display: none;
+        }
+
+        .form-side {
+            min-height: 100vh;
+            padding: 40px 25px;
+        }
+
+        .mobile-logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 35px;
+        }
+
+        .mobile-logo img {
+            width: 110px;
+            height: 80px;
+            object-fit: contain;
+        }
+
+        .form-header h2 {
+            font-size: 42px;
+        }
+
+    }
+
+</style>
+
+
+</head>
+
+<body>
+
+
+<div class="page">
+
+
+    <!-- ================= LEFT SIDE ================= -->
+
+    <section class="intro">
+
+        <a href="index.html" class="logo">
+
+            <img
+                src="https://i.postimg.cc/KYvtyfcX/Whats-App-Image-2026-09-15-at-2-03-03-PM.jpg"
+                alt="Aishwarya Mart">
+
+        </a>
+
+
+        <div class="intro-content">
+
+            <p class="eyebrow">
+                JOIN AISHWARYA MART
+            </p>
+
+            <h1>
+                Your style.<br>
+                <em>Your space.</em>
+            </h1>
+
+            <p class="intro-text">
+                Create your account and discover fashion,
+                beauty, electronics and everyday essentials
+                made for your kind of lifestyle.
+            </p>
+
+        </div>
+
+
+        <p class="intro-bottom">
+            Fashion Â· Beauty Â· Everyday Essentials
+        </p>
+
+    </section>
+
+
+    <!-- ================= RIGHT SIDE ================= -->
+
+    <section class="form-side">
+
+        <div class="form-wrapper">
+
+
+            <!-- MOBILE LOGO -->
+
+            <div class="mobile-logo">
+
+                <a href="index.html">
+
+                    <img
+                        src="https://i.postimg.cc/KYvtyfcX/Whats-App-Image-2026-09-15-at-2-03-03-PM.jpg"
+                        alt="Aishwarya Mart">
+
+                </a>
+
+            </div>
+
+
+            <!-- HEADER -->
+
+            <div class="form-header">
+
+                <h2>
+                    Create account.
+                </h2>
+
+                <p>
+                    Join Aishwarya Mart and start shopping your way.
+                </p>
+
+            </div>
+
+
+            <!-- MESSAGE -->
+
+            <div class="message" id="message"></div>
+
+
+            <!-- REGISTER FORM -->
+
+            <form id="registerForm">
+
+
+                <!-- NAME -->
+
+                <div class="form-group">
+
+                    <label for="name">
+                        Full name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Your full name"
+                        required>
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        required>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Create a password"
+                        minlength="6"
+                        required>
+
+                </div>
+
+
+                <!-- CONFIRM PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="confirmPassword">
+                        Confirm password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        placeholder="Re-enter your password"
+                        minlength="6"
+                        required>
+
+                </div>
+
+
+                <!-- ROLE -->
+
+                <div class="role-group">
+
+                    <label>
+                        Account type
+                    </label>
+
+                    <div class="role-options">
+
+                        <div class="role-option">
+
+                            <input
+                                type="radio"
+                                id="buyer"
+                                name="role"
+                                value="BUYER"
+                                checked>
+
+                            <label for="buyer">
+                                Buyer
+                            </label>
+
+                        </div>
+
+
+                        <div class="role-option">
+
+                            <input
+                                type="radio"
+                                id="seller"
+                                name="role"
+                                value="SELLER">
+
+                            <label for="seller">
+                                Seller
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TERMS -->
+
+                <label class="terms">
+
+                    <input
+                        type="checkbox"
+                        id="terms"
+                        required>
+
+                    <span>
+                        I agree to the Aishwarya Mart terms and
+                        conditions.
+                    </span>
+
+                </label>
+
+
+                <!-- SUBMIT -->
+
+                <button
+                    type="submit"
+                    class="submit-button">
+
+                    Create account
+
+                </button>
+
+            </form>
+
+
+            <!-- DIVIDER -->
+
+            <div class="divider">
+                OR
+            </div>
+
+
+            <!-- LOGIN -->
+
+            <a
+                href="login.html"
+                class="login-link">
+
+                Already have an account? Sign in
+
+            </a>
+
+
+            <!-- HOME -->
+
+            <a
+                href="index.html"
+                class="back-home">
+
+                â† Back to Aishwarya Mart
+
+            </a>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+
+    const registerForm =
+        document.getElementById("registerForm");
+
+    const message =
+        document.getElementById("message");
+
+
+    function showMessage(text) {
+
+        message.textContent = text;
+        message.style.display = "block";
+
+    }
+
+
+    registerForm.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            const name =
+                document.getElementById("name").value.trim();
+
+            const email =
+                document.getElementById("email").value.trim();
+
+            const password =
+                document.getElementById("password").value;
+
+            const confirmPassword =
+                document.getElementById("confirmPassword").value;
+
+            const role =
+                document.querySelector(
+                    'input[name="role"]:checked'
+                ).value;
+
+            const terms =
+                document.getElementById("terms").checked;
+
+
+            /* Basic validation */
+
+            if (password !== confirmPassword) {
+
+                showMessage(
+                    "Passwords do not match."
+                );
+
+                return;
+
+            }
+
+
+            if (!terms) {
+
+                showMessage(
+                    "Please agree to the terms and conditions."
+                );
+
+                return;
+
+            }
+
+
+            const formData =
+                new URLSearchParams();
+
+
+            formData.append(
+                "action",
+                "register"
+            );
+
+            formData.append(
+                "name",
+                name
+            );
+
+            formData.append(
+                "email",
+                email
+            );
+
+            formData.append(
+                "password",
+                password
+            );
+
+            formData.append(
+                "role",
+                role
+            );
+
+
+            try {
+
+                const response =
+                    await fetch("auth", {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/x-www-form-urlencoded"
+                        },
+
+                        body: formData
+
+                    });
+
+
+                if (response.redirected) {
+
+                    window.location.href =
+                        response.url;
+
+                } else {
+
+                    const text =
+                        await response.text();
+
+                    if (text) {
+
+                        showMessage(text);
+
+                    } else {
+
+                        window.location.href =
+                            "login.html?registered=true";
+
+                    }
+
+                }
+
+            } catch (error) {
+
+                showMessage(
+                    "Something went wrong. Please try again."
+                );
+
+            }
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders | Aishwarya Mart</title>
+
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        --burgundy: #8f0000;
+        --dark-burgundy: #650000;
+        --light-burgundy: #aa2424;
+        --cream: #faf6ee;
+        --warm-white: #fffdf9;
+        --soft-cream: #f3ece1;
+        --text: #321d1d;
+        --muted: #806c6c;
+        --border: #eadbd4;
+        --green: #58704d;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: var(--cream);
+        color: var(--text);
+        min-height: 100vh;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    /* HEADER */
+    header {
+        height: 76px;
+        background: var(--warm-white);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 6%;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 21px;
+        font-weight: bold;
+        color: var(--burgundy);
+    }
+
+    .brand img {
+        width: 43px;
+        height: 43px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    nav {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        color: var(--text);
+        font-size: 14px;
+    }
+
+    nav a {
+        transition: 0.2s;
+    }
+
+    nav a:hover {
+        color: var(--burgundy);
+    }
+
+    .bag-link {
+        color: var(--burgundy);
+        font-weight: bold;
+    }
+
+    /* PAGE */
+    main {
+        width: min(1100px, 90%);
+        margin: 55px auto 80px;
+    }
+
+    .page-heading {
+        margin-bottom: 35px;
+    }
+
+    .eyebrow {
+        color: var(--burgundy);
+        font-size: 12px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+    }
+
+    h1 {
+        font-family: Georgia, serif;
+        font-size: 45px;
+        font-weight: normal;
+        margin-bottom: 10px;
+    }
+
+    .intro {
+        color: var(--muted);
+        font-size: 15px;
+    }
+
+    /* ORDER CARD */
+    .orders-container {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+    }
+
+    .order-card {
+        background: var(--warm-white);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        overflow: hidden;
+    }
+
+    .order-top {
+        padding: 20px 24px;
+        background: var(--soft-cream);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .order-info {
+        display: flex;
+        gap: 35px;
+        flex-wrap: wrap;
+    }
+
+    .info-item span {
+        display: block;
+        color: var(--muted);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+    }
+
+    .info-item strong {
+        font-size: 14px;
+    }
+
+    .status {
+        padding: 8px 13px;
+        border-radius: 20px;
+        background: #e6efdf;
+        color: var(--green);
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .order-body {
+        padding: 24px;
+    }
+
+    .product-row {
+        display: flex;
+        align-items: center;
+        gap: 17px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .product-row:last-child {
+        border-bottom: none;
+    }
+
+    .product-image {
+        width: 72px;
+        height: 72px;
+        border-radius: 12px;
+        object-fit: cover;
+        background: var(--soft-cream);
+    }
+
+    .product-details {
+        flex: 1;
+    }
+
+    .product-details h3 {
+        font-size: 15px;
+        margin-bottom: 6px;
+    }
+
+    .product-details p {
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .product-price {
+        font-weight: bold;
+        color: var(--burgundy);
+        font-size: 15px;
+    }
+
+    .order-bottom {
+        margin-top: 20px;
+        padding-top: 18px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .total-label {
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .total {
+        font-size: 20px;
+        color: var(--burgundy);
+        font-weight: bold;
+    }
+
+    .view-button {
+        display: inline-block;
+        padding: 11px 18px;
+        border: 1px solid var(--burgundy);
+        color: var(--burgundy);
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: bold;
+        transition: 0.2s;
+    }
+
+    .view-button:hover {
+        background: var(--burgundy);
+        color: white;
+    }
+
+    /* EMPTY */
+    .empty-state {
+        display: none;
+        background: var(--warm-white);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 70px 25px;
+        text-align: center;
+    }
+
+    .empty-icon {
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        background: var(--soft-cream);
+        color: var(--burgundy);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 27px;
+    }
+
+    .empty-state h2 {
+        font-family: Georgia, serif;
+        font-size: 28px;
+        font-weight: normal;
+        margin-bottom: 10px;
+    }
+
+    .empty-state p {
+        color: var(--muted);
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+
+    .shop-button {
+        display: inline-block;
+        background: var(--burgundy);
+        color: white;
+        padding: 13px 24px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .shop-button:hover {
+        background: var(--dark-burgundy);
+    }
+
+    /* FOOTER */
+    footer {
+        background: var(--dark-burgundy);
+        color: #fff4ef;
+        padding: 35px 6%;
+        text-align: center;
+        font-size: 13px;
+    }
+
+    footer p {
+        opacity: 0.8;
+    }
+
+    /* MOBILE */
+    @media (max-width: 700px) {
+        header {
+            padding: 0 5%;
+        }
+
+        nav {
+            gap: 14px;
+            font-size: 12px;
+        }
+
+        nav a:nth-child(2),
+        nav a:nth-child(3) {
+            display: none;
+        }
+
+        main {
+            width: 92%;
+            margin-top: 35px;
+        }
+
+        h1 {
+            font-size: 36px;
+        }
+
+        .order-top {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .order-info {
+            gap: 18px;
+        }
+
+        .order-body {
+            padding: 18px;
+        }
+
+        .product-row {
+            align-items: flex-start;
+        }
+
+        .product-image {
+            width: 60px;
+            height: 60px;
+        }
+
+        .product-price {
+            font-size: 13px;
+        }
+
+        .order-bottom {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 15px;
+        }
+    }
+</style>
+
+
+</head>
+
+<body>
+
+<header>
+    <a href="index.html" class="brand">
+        <img src="https://i.postimg.cc/KYvtyfcX/Whats-App-Image-2026-09-15-at-2-03-03-PM.jpg"
+             alt="Aishwarya Mart">
+        <span>Aishwarya Mart</span>
+    </a>
+
+
+<nav>
+    <a href="index.html">Shop</a>
+    <a href="wishlist.html">Wishlist</a>
+    <a href="account.html">Account</a>
+    <a href="cart.html" class="bag-link">Bag</a>
+</nav>
+
+
+</header>
+
+<main>
+
+
+<section class="page-heading">
+    <div class="eyebrow">YOUR ACCOUNT</div>
+    <h1>My orders.</h1>
+    <p class="intro">Keep track of your recent purchases and order details.</p>
+</section>
+
+<section class="orders-container" id="ordersContainer">
+
+    <!-- ORDER 1 -->
+    <article class="order-card">
+
+        <div class="order-top">
+
+            <div class="order-info">
+
+                <div class="info-item">
+                    <span>Order</span>
+                    <strong>AM-482731</strong>
+                </div>
+
+                <div class="info-item">
+                    <span>Date</span>
+                    <strong>20 Sep 2026</strong>
+                </div>
+
+                <div class="info-item">
+                    <span>Payment</span>
+                    <strong>Cash on Delivery</strong>
+                </div>
+
+            </div>
+
+            <div class="status">Confirmed</div>
+
+        </div>
+
+        <div class="order-body">
+
+            <div class="product-row">
+
+                <img
+                    class="product-image"
+                    src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=300&q=80"
+                    alt="Elegant Handbag"
+                >
+
+                <div class="product-details">
+                    <h3>Elegant Handbag</h3>
+                    <p>Quantity: 1</p>
+                </div>
+
+                <div class="product-price">â‚¹1,499</div>
+
+            </div>
+
+            <div class="product-row">
+
+                <img
+                    class="product-image"
+                    src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=300&q=80"
+                    alt="Classic Watch"
+                >
+
+                <div class="product-details">
+                    <h3>Classic Watch</h3>
+                    <p>Quantity: 1</p>
+                </div>
+
+                <div class="product-price">â‚¹2,299</div>
+
+            </div>
+
+            <div class="order-bottom">
+
+                <div>
+                    <div class="total-label">Order total</div>
+                    <div class="total">â‚¹3,798</div>
+                </div>
+
+                <a href="#" class="view-button" onclick="showOrderDetails(event)">
+                    View details
+                </a>
+
+            </div>
+
+        </div>
+    </article>
+
+    <!-- ORDER 2 -->
+    <article class="order-card">
+
+        <div class="order-top">
+
+            <div class="order-info">
+
+                <div class="info-item">
+                    <span>Order</span>
+                    <strong>AM-351904</strong>
+                </div>
+
+                <div class="info-item">
+                    <span>Date</span>
+                    <strong>15 Sep 2026</strong>
+                </div>
+
+                <div class="info-item">
+                    <span>Payment</span>
+                    <strong>UPI</strong>
+                </div>
+
+            </div>
+
+            <div class="status">Delivered</div>
+
+        </div>
+
+        <div class="order-body">
+
+            <div class="product-row">
+
+                <img
+                    class="product-image"
+                    src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=300&q=80"
+                    alt="Wireless Headphones"
+                >
+
+                <div class="product-details">
+                    <h3>Wireless Headphones</h3>
+                    <p>Quantity: 1</p>
+                </div>
+
+                <div class="product-price">â‚¹2,999</div>
+
+            </div>
+
+            <div class="order-bottom">
+
+                <div>
+                    <div class="total-label">Order total</div>
+                    <div class="total">â‚¹2,999</div>
+                </div>
+
+                <a href="#" class="view-button" onclick="showOrderDetails(event)">
+                    View details
+                </a>
+
+            </div>
+
+        </div>
+    </article>
+
+</section>
+
+<!-- EMPTY STATE -->
+<section class="empty-state" id="emptyState">
+
+    <div class="empty-icon">â™¡</div>
+
+    <h2>No orders yet</h2>
+
+    <p>
+        Once you place an order, your purchases will appear here.
+    </p>
+
+    <a href="index.html" class="shop-button">
+        Start shopping
+    </a>
+
+</section>
+
+
+</main>
+
+<footer>
+    <p>Â© 2026 Aishwarya Mart Â· Style that feels like you.</p>
+</footer>
+
+<script>
+
+    function showOrderDetails(event) {
+        event.preventDefault();
+
+        alert(
+            "Order details\n\n" +
+            "Your order has been confirmed.\n" +
+            "This page will be connected to the backend order history later."
+        );
+    }
+
+    /*
+       FRONTEND DEMO
+
+       Later this page can load real orders from:
+       OrderServlet / API
+
+       The demo cards above are kept for now so the page
+       looks complete while the backend is being connected.
+    */
+
+</script>
+
+</body>
+</html>

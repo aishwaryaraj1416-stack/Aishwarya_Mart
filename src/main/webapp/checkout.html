@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>Checkout | Aishwarya Mart</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+<style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        --burgundy: #8f0000;
+        --burgundy-dark: #650000;
+        --cream: #faf6ee;
+        --warm-white: #fffdf9;
+        --beige: #eee5d5;
+        --soft: #f4ece2;
+        --text: #24191a;
+        --muted: #756b6b;
+        --border: #ded6d0;
+        --white: #ffffff;
+        --green: #49634d;
+    }
+
+    body {
+        min-height: 100vh;
+        font-family: "Inter", sans-serif;
+        background: var(--cream);
+        color: var(--text);
+    }
+
+
+    /* ================= HEADER ================= */
+
+    header {
+        height: 82px;
+        background: var(--warm-white);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 6%;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+    }
+
+    .logo img {
+        width: 105px;
+        height: 70px;
+        object-fit: contain;
+    }
+
+    .secure {
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+
+    /* ================= PAGE ================= */
+
+    .page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 55px 30px 90px;
+    }
+
+    .eyebrow {
+        color: var(--burgundy);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 2.5px;
+        margin-bottom: 12px;
+    }
+
+    .heading {
+        margin-bottom: 40px;
+    }
+
+    .heading h1 {
+        font-family: "DM Serif Display", serif;
+        font-size: clamp(45px, 5vw, 64px);
+        font-weight: 400;
+        line-height: 1;
+    }
+
+    .heading p {
+        color: var(--muted);
+        font-size: 13px;
+        margin-top: 12px;
+    }
+
+
+    /* ================= LAYOUT ================= */
+
+    .checkout-layout {
+        display: grid;
+        grid-template-columns: 1fr 370px;
+        gap: 35px;
+        align-items: start;
+    }
+
+
+    /* ================= CARD ================= */
+
+    .card {
+        background: var(--warm-white);
+        border: 1px solid var(--border);
+        padding: 30px;
+        margin-bottom: 20px;
+    }
+
+    .card-title {
+        margin-bottom: 25px;
+    }
+
+    .card-title h2 {
+        font-family: "DM Serif Display", serif;
+        font-size: 29px;
+        font-weight: 400;
+    }
+
+    .card-title p {
+        color: var(--muted);
+        font-size: 11px;
+        margin-top: 5px;
+    }
+
+
+    /* ================= FORM ================= */
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        border: 1px solid var(--border);
+        background: var(--cream);
+        padding: 13px 14px;
+        font-family: "Inter", sans-serif;
+        font-size: 13px;
+        color: var(--text);
+        outline: none;
+    }
+
+    .form-group input {
+        height: 48px;
+    }
+
+    .form-group textarea {
+        min-height: 85px;
+        resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        border-color: var(--burgundy);
+        background: var(--white);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+
+    /* ================= PAYMENT ================= */
+
+    .payment-option {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        border: 1px solid var(--border);
+        padding: 16px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        background: var(--cream);
+        transition: 0.2s ease;
+    }
+
+    .payment-option:hover {
+        border-color: var(--burgundy);
+    }
+
+    .payment-option input {
+        margin-top: 3px;
+        accent-color: var(--burgundy);
+    }
+
+    .payment-option strong {
+        display: block;
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    .payment-option span {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+
+    /* ================= ORDER SUMMARY ================= */
+
+    .summary {
+        background: var(--warm-white);
+        border: 1px solid var(--border);
+        padding: 28px;
+        position: sticky;
+        top: 25px;
+    }
+
+    .summary h2 {
+        font-family: "DM Serif Display", serif;
+        font-size: 30px;
+        font-weight: 400;
+        margin-bottom: 25px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 13px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 12px;
+    }
+
+    .summary-item span:first-child {
+        color: var(--muted);
+    }
+
+    .summary-item strong {
+        font-weight: 600;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid var(--border);
+        margin-top: 20px;
+        padding-top: 20px;
+    }
+
+    .summary-total span {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .summary-total strong {
+        font-family: "DM Serif Display", serif;
+        font-size: 28px;
+        font-weight: 400;
+    }
+
+
+    /* ================= PLACE ORDER ================= */
+
+    .place-order {
+        width: 100%;
+        height: 54px;
+        border: none;
+        background: var(--burgundy);
+        color: var(--white);
+        font-family: "Inter", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        cursor: pointer;
+        margin-top: 25px;
+    }
+
+    .place-order:hover {
+        background: var(--burgundy-dark);
+    }
+
+
+    /* ================= MESSAGE ================= */
+
+    .message {
+        display: none;
+        background: #f1e2df;
+        color: var(--burgundy-dark);
+        padding: 12px 14px;
+        margin-bottom: 18px;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+
+    /* ================= NOTE ================= */
+
+    .note {
+        color: var(--muted);
+        font-size: 10px;
+        line-height: 1.6;
+        margin-top: 15px;
+        text-align: center;
+    }
+
+
+    /* ================= FOOTER ================= */
+
+    footer {
+        background: var(--burgundy-dark);
+        color: #eadbdd;
+        padding: 30px 20px;
+        text-align: center;
+        font-size: 11px;
+        letter-spacing: 0.8px;
+    }
+
+
+    /* ================= MOBILE ================= */
+
+    @media (max-width: 850px) {
+
+        header {
+            padding: 0 20px;
+        }
+
+        .checkout-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .summary {
+            position: static;
+        }
+
+        .page {
+            padding: 45px 18px 65px;
+        }
+
+    }
+
+
+    @media (max-width: 550px) {
+
+        .card {
+            padding: 22px;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .secure {
+            display: none;
+        }
+
+    }
+
+</style>
+
+
+</head>
+
+<body>
+
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <a href="index.html" class="logo">
+
+        <img
+            src="https://i.postimg.cc/KYvtyfcX/Whats-App-Image-2026-09-15-at-2-03-03-PM.jpg"
+            alt="Aishwarya Mart">
+
+    </a>
+
+
+    <span class="secure">
+        Secure checkout
+    </span>
+
+</header>
+
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="page">
+
+
+    <div class="heading">
+
+        <p class="eyebrow">
+            ALMOST THERE
+        </p>
+
+        <h1>
+            Checkout.
+        </h1>
+
+        <p>
+            Enter your delivery details and choose how you'd like to pay.
+        </p>
+
+    </div>
+
+
+
+    <div class="checkout-layout">
+
+
+        <!-- ================= LEFT ================= -->
+
+        <div>
+
+
+            <!-- DELIVERY -->
+
+            <section class="card">
+
+                <div class="card-title">
+
+                    <h2>
+                        Delivery details.
+                    </h2>
+
+                    <p>
+                        Where should we send your order?
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="message"
+                    id="message">
+                </div>
+
+
+                <form id="checkoutForm">
+
+
+                    <div class="form-group">
+
+                        <label for="name">
+                            Full name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            required
+                            placeholder="Your full name">
+
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="email">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                required
+                                placeholder="you@example.com">
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="phone">
+                                Phone
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                required
+                                placeholder="Your phone number">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="address">
+                            Delivery address
+                        </label>
+
+                        <textarea
+                            id="address"
+                            required
+                            placeholder="House number, street, area"></textarea>
+
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="city">
+                                City
+                            </label>
+
+                            <input
+                                type="text"
+                                id="city"
+                                required
+                                placeholder="City">
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="pincode">
+                                Pincode
+                            </label>
+
+                            <input
+                                type="text"
+                                id="pincode"
+                                required
+                                placeholder="Pincode">
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+
+            <!-- PAYMENT -->
+
+            <section class="card">
+
+                <div class="card-title">
+
+                    <h2>
+                        Payment.
+                    </h2>
+
+                    <p>
+                        Choose your preferred payment method.
+                    </p>
+
+                </div>
+
+
+                <label class="payment-option">
+
+                    <input
+                        type="radio"
+                        name="payment"
+                        value="COD"
+                        checked>
+
+                    <div>
+
+                        <strong>
+                            Cash on delivery
+                        </strong>
+
+                        <span>
+                            Pay when your order arrives.
+                        </span>
+
+                    </div>
+
+                </label>
+
+
+                <label class="payment-option">
+
+                    <input
+                        type="radio"
+                        name="payment"
+                        value="UPI">
+
+                    <div>
+
+                        <strong>
+                            UPI
+                        </strong>
+
+                        <span>
+                            Mock UPI payment for project demonstration.
+                        </span>
+
+                    </div>
+
+                </label>
+
+
+                <label class="payment-option">
+
+                    <input
+                        type="radio"
+                        name="payment"
+                        value="CARD">
+
+                    <div>
+
+                        <strong>
+                            Card
+                        </strong>
+
+                        <span>
+                            Mock card payment for project demonstration.
+                        </span>
+
+                    </div>
+
+                </label>
+
+            </section>
+
+        </div>
+
+
+
+        <!-- ================= RIGHT ================= -->
+
+        <aside class="summary">
+
+            <h2>
+                Your order.
+            </h2>
+
+
+            <div id="summaryItems">
+
+            </div>
+
+
+            <div class="summary-row">
+
+                <span>
+                    Subtotal
+                </span>
+
+                <strong id="subtotal">
+                    â‚¹0.00
+                </strong>
+
+            </div>
+
+
+            <div class="summary-row">
+
+                <span>
+                    Delivery
+                </span>
+
+                <strong>
+                    Free
+                </strong>
+
+            </div>
+
+
+            <div class="summary-total">
+
+                <span>
+                    Total
+                </span>
+
+                <strong id="total">
+                    â‚¹0.00
+                </strong>
+
+            </div>
+
+
+            <button
+                type="submit"
+                form="checkoutForm"
+                class="place-order">
+
+                Place order
+
+            </button>
+
+
+            <p class="note">
+                This is a mock checkout for the Aishwarya Mart
+                project. No real payment will be processed.
+            </p>
+
+        </aside>
+
+    </div>
+
+</main>
+
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    Aishwarya Mart Â· Thank you for shopping with us
+
+</footer>
+
+
+
+<script>
+
+    /* ==========================================
+       DEMO CART
+       ========================================== */
+
+    const cart = [
+
+        {
+            name: "Elegant Handbag",
+            price: 1499,
+            quantity: 1
+        },
+
+        {
+            name: "Classic Watch",
+            price: 2299,
+            quantity: 1
+        }
+
+    ];
+
+
+    /* ==========================================
+       RENDER SUMMARY
+       ========================================== */
+
+    function renderSummary() {
+
+        const container =
+            document.getElementById("summaryItems");
+
+        container.innerHTML = "";
+
+
+        let subtotal = 0;
+
+
+        cart.forEach(function(item) {
+
+            const total =
+                item.price * item.quantity;
+
+
+            subtotal += total;
+
+
+            const element =
+                document.createElement("div");
+
+            element.className =
+                "summary-item";
+
+
+            element.innerHTML = `
+
+                <span>
+                    ${escapeHtml(item.name)}
+                    Ã— ${item.quantity}
+                </span>
+
+                <strong>
+                    â‚¹${total.toFixed(2)}
+                </strong>
+
+            `;
+
+
+            container.appendChild(element);
+
+        });
+
+
+        document.getElementById("subtotal")
+            .textContent =
+            "â‚¹" + subtotal.toFixed(2);
+
+
+        document.getElementById("total")
+            .textContent =
+            "â‚¹" + subtotal.toFixed(2);
+
+    }
+
+
+    /* ==========================================
+       CHECKOUT
+       ========================================== */
+
+    document.getElementById("checkoutForm")
+        .addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
+
+
+                const name =
+                    document.getElementById("name")
+                        .value.trim();
+
+                const email =
+                    document.getElementById("email")
+                        .value.trim();
+
+                const phone =
+                    document.getElementById("phone")
+                        .value.trim();
+
+                const address =
+                    document.getElementById("address")
+                        .value.trim();
+
+                const city =
+                    document.getElementById("city")
+                        .value.trim();
+
+                const pincode =
+                    document.getElementById("pincode")
+                        .value.trim();
+
+
+                const payment =
+                    document.querySelector(
+                        'input[name="payment"]:checked'
+                    ).value;
+
+
+                if (
+                    !name ||
+                    !email ||
+                    !phone ||
+                    !address ||
+                    !city ||
+                    !pincode
+                ) {
+
+                    showMessage(
+                        "Please complete all delivery details."
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                 * MOCK ORDER
+                 *
+                 * Backend integration will be added later.
+                 */
+
+                const orderData = {
+
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    address: address,
+                    city: city,
+                    pincode: pincode,
+                    payment: payment
+
+                };
+
+
+                sessionStorage.setItem(
+                    "lastOrder",
+                    JSON.stringify(orderData)
+                );
+
+
+                window.location.href =
+                    "order-success.html";
+
+            }
+        );
+
+
+    /* ==========================================
+       MESSAGE
+       ========================================== */
+
+    function showMessage(text) {
+
+        const message =
+            document.getElementById("message");
+
+
+        message.textContent =
+            text;
+
+
+        message.style.display =
+            "block";
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+
+    /* ==========================================
+       ESCAPE HTML
+       ========================================== */
+
+    function escapeHtml(value) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent =
+            value;
+
+        return div.innerHTML;
+
+    }
+
+
+    /* ==========================================
+       INITIAL LOAD
+       ========================================== */
+
+    renderSummary();
+
+</script>
+
+
+</body>
+
+</html>
