@@ -273,6 +273,7 @@ public class OrderServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
+        request.setCharacterEncoding("UTF-8");
         HttpSession session =
                 request.getSession(false);
 
@@ -295,6 +296,7 @@ public class OrderServlet extends HttpServlet {
         if ("checkout".equals(action)) {
 
             checkout(
+                    request,
                     userId,
                     response
             );
@@ -317,33 +319,66 @@ public class OrderServlet extends HttpServlet {
     }
 
     private void checkout(
+            HttpServletRequest request,
             int userId,
             HttpServletResponse response)
             throws IOException {
 
-        int orderId =
-                orderService.checkout(userId);
-
-        response.setContentType(
-                "application/json"
-        );
-
+        response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        if (orderId == -1) {
+        String name = value(request.getParameter("name"));
+        String email = value(request.getParameter("email"));
+        String phone = value(request.getParameter("phone"));
+        String address = value(request.getParameter("address"));
+        String city = value(request.getParameter("city"));
+        String pincode = value(request.getParameter("pincode"));
+        String paymentMethod = value(request.getParameter("payment")).toUpperCase();
 
+        if (name.isBlank() || email.isBlank() || phone.isBlank()
+                || address.isBlank() || city.isBlank() || pincode.isBlank()) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write(
-                    "{\"success\":false,\"message\":\"Checkout failed\"}"
-            );
-
-        } else {
-
-            response.getWriter().write(
-                    "{\"success\":true,\"orderId\":" +
-                            orderId +
-                            ",\"message\":\"Order placed successfully\"}"
-            );
+                    "{\"success\":false,\"message\":\"Please complete all delivery details.\"}");
+            return;
         }
+
+        if (name.length() > 120 || email.length() > 150 || phone.length() > 30
+                || address.length() > 500 || city.length() > 100 || pincode.length() > 20
+                || !email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")
+                || !phone.replaceAll("[^0-9]", "").matches("[0-9]{10,15}")
+                || !pincode.matches("[0-9]{6}")) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write(
+                    "{\"success\":false,\"message\":\"Please check your email, phone number, address, and six-digit PIN code.\"}");
+            return;
+        }
+
+        if (!"COD".equals(paymentMethod) && !"UPI".equals(paymentMethod)
+                && !"CARD".equals(paymentMethod)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write(
+                    "{\"success\":false,\"message\":\"Choose a valid mock payment method.\"}");
+            return;
+        }
+
+        int orderId = orderService.checkout(
+                userId, name, email, phone, address, city, pincode, paymentMethod);
+
+        if (orderId == -1) {
+            response.setStatus(HttpServletResponse.SC_CONFLICT);
+            response.getWriter().write(
+                    "{\"success\":false,\"message\":\"Checkout failed. Your cart may be empty or stock may have changed.\"}");
+            return;
+        }
+
+        response.getWriter().write(
+                "{\"success\":true,\"orderId\":" + orderId
+                        + ",\"message\":\"Order placed successfully\"}");
+    }
+
+    private String value(String value) {
+        return value == null ? "" : value.trim();
     }
 
     private void updateStatus(
