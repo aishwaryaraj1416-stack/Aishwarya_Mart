@@ -98,15 +98,16 @@ public class ChatService {
 
     private String addProduct(String message, Integer userId) {
         if (userId == null) return "Please sign in first, then I can add things to your cart. 💗";
-        String query = cleanActionQuery(message);
         int quantity = 1;
-        Matcher number = Pattern.compile("\\b(\\d+)\\b").matcher(query);
+        Matcher number = Pattern.compile("\\b(\\d+)\\b").matcher(message);
+        String messageWithoutQuantity = message;
         if (number.find()) {
             try { quantity = Integer.parseInt(number.group(1)); }
             catch (NumberFormatException e) { return "Please enter a valid quantity."; }
-            query = (query.substring(0, number.start()) + " " + query.substring(number.end()))
-                    .replaceAll("\\s+", " ").trim();
+            messageWithoutQuantity = message.substring(0, number.start()) + " "
+                    + message.substring(number.end());
         }
+        String query = cleanActionQuery(messageWithoutQuantity);
         if (quantity < 1 || quantity > 100) return "Choose a quantity from 1 to 100, please.";
         if (query.isBlank()) return "Which product should I add? Tell me its name. 🛍️";
 
