@@ -1,0 +1,31 @@
+#boba-chat{font-family:"DM Sans",Arial,sans-serif;position:fixed;right:22px;bottom:24px;z-index:9999;color:#34272a}
+#boba-chat *{box-sizing:border-box}
+.boba-launcher{display:flex;align-items:center;gap:10px;border:0;border-radius:999px;padding:11px 18px 11px 12px;background:#6f2435;color:#fff;box-shadow:0 8px 28px #32131e35;cursor:pointer;font:600 14px "DM Sans",Arial,sans-serif;transition:transform .18s,box-shadow .18s}
+.boba-launcher:hover{transform:translateY(-2px);box-shadow:0 12px 32px #32131e40}
+.boba-cup{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#fff4ed;font-size:23px}
+.boba-launcher-label{letter-spacing:.01em}
+.boba-panel{position:absolute;right:0;bottom:68px;width:min(370px,calc(100vw - 28px));height:min(560px,calc(100dvh - 120px));min-height:360px;display:flex;flex-direction:column;overflow:hidden;background:#fffdfb;border:1px solid #eadbd8;border-radius:20px;box-shadow:0 18px 55px #32131e2b}
+.boba-panel[hidden]{display:none}
+.boba-header{display:flex;align-items:center;gap:11px;padding:16px;background:#6f2435;color:#fff}
+.boba-avatar{display:grid;place-items:center;flex:0 0 42px;height:42px;border-radius:50%;background:#fff4ed;font-size:24px}
+.boba-heading{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.boba-heading strong{font-family:"Playfair Display",Georgia,serif;font-size:20px;font-weight:600;line-height:1.1}
+.boba-heading span{font-size:11px;opacity:.88}
+.boba-close{width:32px;height:32px;border:0;border-radius:50%;background:#ffffff20;color:#fff;font-size:25px;line-height:1;cursor:pointer}
+.boba-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:16px;background:linear-gradient(180deg,#fffdfb,#fff8f4)}
+.boba-message{max-width:88%;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.55;padding:11px 13px;border-radius:15px}
+.boba-bot{align-self:flex-start;background:#f3e9e7;color:#39282c;border-bottom-left-radius:5px}
+.boba-user{align-self:flex-end;background:#6f2435;color:#fff;border-bottom-right-radius:5px}
+.boba-thinking{opacity:.72;font-style:italic}
+.boba-suggestions{display:flex;flex-wrap:wrap;gap:7px;padding:0 13px 12px;background:#fffdfb}
+.boba-suggestions button{border:1px solid #dfc5c4;border-radius:999px;background:#fff;color:#6f2435;padding:7px 10px;font:500 11px "DM Sans",Arial,sans-serif;cursor:pointer}
+.boba-suggestions button:hover{background:#f8eeeb}
+.boba-form{display:flex;gap:8px;padding:12px;border-top:1px solid #eee0dc;background:#fff}
+.boba-form input{flex:1;min-width:0;border:1px solid #dfd1cd;border-radius:999px;padding:12px 14px;outline:none;font:13px "DM Sans",Arial,sans-serif;color:#34272a}
+.boba-form input:focus{border-color:#8b4654;box-shadow:0 0 0 3px #6f243514}
+.boba-send{flex:0 0 42px;border:0;border-radius:50%;background:#6f2435;color:#fff;font-size:18px;cursor:pointer}
+.boba-send:disabled{opacity:.55;cursor:wait}
+.boba-footnote{margin:0;padding:0 14px 10px;background:#fff;color:#8b7b7a;text-align:center;font-size:10px}
+.boba-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:480px){#boba-chat{right:12px;bottom:14px}.boba-panel{right:-2px;bottom:64px;width:calc(100vw - 24px);height:min(590px,calc(100dvh - 96px));min-height:320px}.boba-launcher{padding:9px 14px 9px 9px}.boba-cup{width:35px;height:35px}}
+@media(prefers-reduced-motion:reduce){.boba-launcher{transition:none}}
