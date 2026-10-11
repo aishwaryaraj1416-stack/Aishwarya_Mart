@@ -143,8 +143,8 @@ public class ChatService {
         }
         if (matches.isEmpty()) return "I couldn't find that item in your cart. Ask me to show your cart.";
         if (matches.size() > 1) {
-            StringBuilder options = new StringBuilder("I found a few matches in your cart:\\n");
-            for (CartItem item : matches) options.append("• ").append(item.getProductName()).append('\\n');
+            StringBuilder options = new StringBuilder("I found a few matches in your cart:\n");
+            for (CartItem item : matches) options.append("• ").append(item.getProductName()).append('\n');
             return options + "Tell me the exact product name, please.";
         }
         CartItem item = matches.get(0);
@@ -157,23 +157,23 @@ public class ChatService {
         if (userId == null) return "Please sign in to view your personal cart. 💗";
         List<CartItem> items = cartDAO.getCartItems(userId);
         if (items.isEmpty()) return "Your cart is empty for now! 🌷 Let's find something you love.";
-        StringBuilder reply = new StringBuilder("Your cart 🛒\\n");
+        StringBuilder reply = new StringBuilder("Your cart 🛒\n");
         BigDecimal total = BigDecimal.ZERO;
         for (CartItem item : items) {
             BigDecimal price = item.getPrice() == null ? BigDecimal.ZERO : item.getPrice();
             BigDecimal subtotal = price.multiply(BigDecimal.valueOf(item.getQuantity()));
             total = total.add(subtotal);
             reply.append("• ").append(item.getProductName()).append(" × ")
-                    .append(item.getQuantity()).append(" — ₹").append(subtotal.toPlainString()).append('\\n');
+                    .append(item.getQuantity()).append(" — ₹").append(subtotal.toPlainString()).append('\n');
         }
-        return reply.append("\\nCart total: ₹").append(total.toPlainString()).toString();
+        return reply.append("\nCart total: ₹").append(total.toPlainString()).toString();
     }
 
     private String formatProducts(List<Product> products, String heading) {
         if (products == null || products.isEmpty()) {
             return "I couldn't find matching in-stock products. Try another name, category, or budget. 🌷";
         }
-        StringBuilder reply = new StringBuilder(heading).append('\\n');
+        StringBuilder reply = new StringBuilder(heading).append('\n');
         int shown = 0;
         for (Product product : products) {
             if (shown++ == 5) {
@@ -186,7 +186,7 @@ public class ChatService {
             if (product.getCategory() != null && !product.getCategory().isBlank()) {
                 reply.append(" · ").append(product.getCategory());
             }
-            reply.append('\\n');
+            reply.append('\n');
         }
         return reply.toString().trim();
     }
@@ -236,7 +236,7 @@ public class ChatService {
             catalogue.append("- ").append(p.getName())
                     .append(" | category: ").append(p.getCategory())
                     .append(" | price: ₹").append(p.getPrice())
-                    .append(" | stock: ").append(p.getStockQty()).append('\\n');
+                    .append(" | stock: ").append(p.getStockQty()).append('\n');
         }
 
         String prompt = "You are Boba, the friendly and concise shopping assistant for Aishwarya Mart. "
