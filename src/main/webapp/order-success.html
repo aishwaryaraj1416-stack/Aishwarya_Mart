@@ -474,28 +474,61 @@
 
 
 <script>
-    let order = null;
-    try {
-        const savedOrder = sessionStorage.getItem("lastOrder");
-        if (savedOrder) order = JSON.parse(savedOrder);
-    } catch (error) {
-        console.error("Could not read checkout confirmation details.", error);
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get("orderId");
+
+    async function loadOrderConfirmation() {
+        if (!orderId) {
+            showUnavailable();
+            return;
+        }
+
+        try {
+            const response = await fetch("orders", {
+                headers: { "Accept": "application/json" },
+                credentials: "same-origin"
+            });
+
+            if (response.status === 401) {
+                window.location.href = "login.html";
+                return;
+            }
+            if (!response.ok) throw new Error("Could not load the order confirmation.");
+
+            const orders = await response.json();
+            const order = Array.isArray(orders)
+                ? orders.find(item => String(item.id) === String(orderId))
+                : null;
+
+            if (!order) {
+                showUnavailable();
+                return;
+            }
+
+            document.getElementById("orderNumber").textContent = "AM-" + order.id;
+            document.getElementById("customerName").textContent = order.deliveryName || "—";
+            document.getElementById("customerEmail").textContent = order.deliveryEmail || "—";
+            document.getElementById("paymentMethod").textContent = formatPayment(order.paymentMethod);
+            document.getElementById("deliveryAddress").textContent =
+                [order.deliveryAddress, order.deliveryCity, order.deliveryPincode]
+                    .filter(Boolean).join(", ") || "Not provided";
+
+            const phoneElement = document.getElementById("customerPhone");
+            if (phoneElement) phoneElement.textContent = order.deliveryPhone || "—";
+        } catch (error) {
+            console.error(error);
+            showUnavailable();
+        }
     }
 
-    const params = new URLSearchParams(window.location.search);
-    const orderId = params.get("orderId") || (order && order.orderId);
-
-    if (!orderId || !order) {
-        document.querySelector(".subtitle").textContent =
-            "Your order confirmation details are unavailable. You can check your order history for the latest status.";
-        document.getElementById("orderNumber").textContent = "See My Orders";
-    } else {
-        document.getElementById("orderNumber").textContent = "AM-" + orderId;
-        document.getElementById("customerName").textContent = order.name || "—";
-        document.getElementById("customerEmail").textContent = order.email || "—";
-        document.getElementById("paymentMethod").textContent = formatPayment(order.payment);
-        document.getElementById("deliveryAddress").textContent =
-            [order.address, order.city, order.pincode].filter(Boolean).join(", ") || "Not provided";
+    function showUnavailable() {
+        const subtitle = document.querySelector(".subtitle");
+        if (subtitle) {
+            subtitle.textContent =
+                "We couldn't load this order confirmation. Please check your order history.";
+        }
+        const orderNumber = document.getElementById("orderNumber");
+        if (orderNumber) orderNumber.textContent = "See My Orders";
     }
 
     function formatPayment(payment) {
@@ -504,6 +537,8 @@
         if (payment === "CARD") return "Mock card payment";
         return "—";
     }
+
+    loadOrderConfirmation();
 </script>
 
 
