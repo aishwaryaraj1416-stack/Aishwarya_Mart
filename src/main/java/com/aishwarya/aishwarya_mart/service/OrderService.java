@@ -16,7 +16,10 @@ public class OrderService {
      * Places an order as one database transaction. An order, its items,
      * stock deductions and cart cleanup either all succeed or all roll back.
      */
-    public int checkout(int userId) {
+    public int checkout(int userId, String deliveryName, String deliveryEmail,
+                        String deliveryPhone, String deliveryAddress,
+                        String deliveryCity, String deliveryPincode,
+                        String paymentMethod) {
         if (userId <= 0) {
             return -1;
         }
@@ -43,7 +46,9 @@ public class OrderService {
                             BigDecimal.valueOf(line.quantity())));
                 }
 
-                int orderId = insertOrder(connection, userId, total);
+                int orderId = insertOrder(connection, userId, total, deliveryName,
+                        deliveryEmail, deliveryPhone, deliveryAddress,
+                        deliveryCity, deliveryPincode, paymentMethod);
                 if (orderId <= 0) {
                     connection.rollback();
                     return -1;
@@ -114,16 +119,29 @@ public class OrderService {
         return lines;
     }
 
-    private int insertOrder(Connection connection, int userId, BigDecimal total)
-            throws Exception {
+    private int insertOrder(Connection connection, int userId, BigDecimal total,
+                            String deliveryName, String deliveryEmail,
+                            String deliveryPhone, String deliveryAddress,
+                            String deliveryCity, String deliveryPincode,
+                            String paymentMethod) throws Exception {
         String sql = """
-                INSERT INTO orders (user_id, total_amount, status)
-                VALUES (?, ?, 'PENDING')
+                INSERT INTO orders
+                    (user_id, total_amount, status, delivery_name, delivery_email,
+                     delivery_phone, delivery_address, delivery_city,
+                     delivery_pincode, payment_method)
+                VALUES (?, ?, 'PENDING', ?, ?, ?, ?, ?, ?, ?)
                 """;
         try (PreparedStatement statement = connection.prepareStatement(
                 sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setInt(1, userId);
             statement.setBigDecimal(2, total);
+            statement.setString(3, deliveryName);
+            statement.setString(4, deliveryEmail);
+            statement.setString(5, deliveryPhone);
+            statement.setString(6, deliveryAddress);
+            statement.setString(7, deliveryCity);
+            statement.setString(8, deliveryPincode);
+            statement.setString(9, paymentMethod);
             statement.executeUpdate();
             try (ResultSet keys = statement.getGeneratedKeys()) {
                 return keys.next() ? keys.getInt(1) : -1;
