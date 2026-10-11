@@ -2415,40 +2415,68 @@
        WISHLIST
     ================================ */
 
-    function toggleWishlist(id) {
-
-        const product = products.find(
-            product => product.id === id
-        );
-
-        if (!product) {
-            return;
-        }
-
-        const exists = wishlist.some(
-            item => item.id === id
-        );
-
-        if (exists) {
-
-            wishlist = wishlist.filter(
-                item => item.id !== id
+    async function loadWishlist() {
+        try {
+            const response = await fetch("wishlist", {
+                headers: { "Accept": "application/json" },
+                credentials: "same-origin"
+            });
+            if (response.status === 401) {
+                wishlist = [];
+                return;
+            }
+            if (!response.ok) throw new Error("Wishlist request failed.");
+            const saved = await response.json();
+            wishlist = Array.isArray(saved) ? saved.map(item => ({
+                ...item,
+                id: Number(item.id)
+            })) : [];
+            renderProducts(
+                currentCategory === "All"
+                    ? products
+                    : products.filter(product =>
+                        String(product.category).toLowerCase() === currentCategory.toLowerCase()
+                    )
             );
-
-        } else {
-
-            wishlist.push(product);
+        } catch (error) {
+            console.warn("Could not load saved wishlist:", error);
         }
+    }
 
-        renderProducts(
-            currentCategory === "All"
-                ? products
-                : products.filter(
-                    product =>
-                        String(product.category).toLowerCase() ===
-                        currentCategory.toLowerCase()
-                )
-        );
+
+    async function toggleWishlist(id) {
+        const product = products.find(item => Number(item.id) === Number(id));
+        if (!product) return;
+
+        const exists = wishlist.some(item => Number(item.id) === Number(id));
+        const body = new URLSearchParams();
+        body.append("action", exists ? "remove" : "add");
+        body.append("productId", String(id));
+
+        try {
+            const response = await fetch("wishlist", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+                credentials: "same-origin",
+                body: body.toString()
+            });
+
+            if (response.status === 401) {
+                window.location.href = "login.html";
+                return;
+            }
+            if (!response.ok) {
+                if (response.status === 403) throw new Error("Please log in with a buyer account to use your wishlist.");
+                throw new Error("Could not update your wishlist.");
+            }
+
+            const result = await response.json();
+            if (!result.success) throw new Error("Your wishlist could not be updated.");
+            await loadWishlist();
+        } catch (error) {
+            console.error(error);
+            alert(error.message || "Could not update your wishlist. Please try again.");
+        }
     }
 
 
@@ -2532,6 +2560,7 @@
     ================================ */
 
     loadProducts();
+    loadWishlist();
 
     loadCart();
 
