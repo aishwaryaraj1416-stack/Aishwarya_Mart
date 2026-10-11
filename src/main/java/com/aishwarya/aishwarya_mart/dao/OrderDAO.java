@@ -444,14 +444,12 @@ public class OrderDAO extends BaseDAO {
 
     private Order mapOrder(ResultSet result)
             throws Exception {
-
-        return new Order(
+        Order order = new Order(
                 result.getInt("id"),
                 result.getInt("user_id"),
                 result.getBigDecimal("total_amount"),
                 result.getString("status"),
-                result.getTimestamp("created_at")
-                        .toLocalDateTime()
+                result.getTimestamp("created_at").toLocalDateTime()
         );
         order.setDeliveryName(result.getString("delivery_name"));
         order.setDeliveryEmail(result.getString("delivery_email"));
