@@ -2362,8 +2362,6 @@
         const product = products.find(product => Number(product.id) === Number(id));
         if (!product) return;
 
-        const existingItem = cart.find(item => Number(item.id) === Number(id));
-        const quantity = existingItem ? Number(existingItem.qty) + 1 : 1;
         const added = await postCartAction("add", id, 1);
         if (added) openCart();
     }
