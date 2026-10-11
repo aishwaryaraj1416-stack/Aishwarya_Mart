@@ -1869,7 +1869,7 @@
        PRODUCT API
     ================================ */
 
-    const API_URL = "/aishwarya_mart/products";
+    const API_URL = "products";
 
     let products = [];
     let cart = [];
@@ -1882,100 +1882,37 @@
     ================================ */
 
     async function loadProducts() {
+        const container = document.getElementById("products");
+        if (container) {
+            container.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:50px;color:#756b6b;">Loading products...</p>';
+        }
 
         try {
-
-            const response = await fetch(API_URL);
-
-            if (!response.ok) {
-                throw new Error("Backend unavailable");
-            }
+            const response = await fetch(API_URL, {
+                headers: { "Accept": "application/json" },
+                credentials: "same-origin"
+            });
+            if (!response.ok) throw new Error("Could not load products from the server.");
 
             const data = await response.json();
+            if (!Array.isArray(data)) throw new Error("The product response was invalid.");
 
             products = data.map(product => ({
                 ...product,
                 image: product.imageUrl
             }));
-
             renderProducts(products);
-
         } catch (error) {
-
             console.error("Could not load products:", error);
-
-            products = [
-
-                {
-                    id: 1,
-                    name: "Elegant Handbag",
-                    category: "Fashion",
-                    price: 1499,
-                    image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3"
-                },
-
-                {
-                    id: 2,
-                    name: "Classic Watch",
-                    category: "Fashion",
-                    price: 2499,
-                    image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d"
-                },
-
-                {
-                    id: 3,
-                    name: "Wireless Headphones",
-                    category: "Electronics",
-                    price: 2999,
-                    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e"
-                },
-
-                {
-                    id: 4,
-                    name: "Smartphone",
-                    category: "Electronics",
-                    price: 18999,
-                    image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9"
-                },
-
-                {
-                    id: 5,
-                    name: "Luxury Perfume",
-                    category: "Beauty",
-                    price: 1999,
-                    image: "https://images.unsplash.com/photo-1541643600914-78b084683601"
-                },
-
-                {
-                    id: 6,
-                    name: "Skincare Set",
-                    category: "Beauty",
-                    price: 1299,
-                    image: "https://images.unsplash.com/photo-1556228578-8c89e6adf883"
-                },
-
-                {
-                    id: 7,
-                    name: "Decorative Lamp",
-                    category: "Home",
-                    price: 899,
-                    image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c"
-                },
-
-                {
-                    id: 8,
-                    name: "Premium Coffee Mug",
-                    category: "Home",
-                    price: 499,
-                    image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d"
-                }
-
-            ];
-
-            renderProducts(products);
+            products = [];
+            renderProducts([]);
+            if (container) {
+                container.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:50px;color:#756b6b;">Products could not be loaded right now. Please refresh and try again.</p>';
+            }
+            const newContainer = document.getElementById("newProducts");
+            if (newContainer) newContainer.innerHTML = "";
         }
     }
-
 
     /* ================================
        RENDER PRODUCTS
@@ -2359,156 +2296,122 @@
     }
 
 
-    function addToCart(id) {
-
-        const product = products.find(
-            product => product.id === id
-        );
-
-        if (!product) {
-            return;
-        }
-
-        const existingItem = cart.find(
-            item => item.id === id
-        );
-
-        if (existingItem) {
-
-            existingItem.qty++;
-
-        } else {
-
-            cart.push({
-                ...product,
-                qty: 1
+    async function loadCart() {
+        try {
+            const response = await fetch("cart", {
+                headers: { "Accept": "application/json" },
+                credentials: "same-origin"
             });
-        }
 
-        updateCart();
-        openCart();
+            if (response.status === 401) {
+                cart = [];
+                updateCart();
+                return;
+            }
+            if (!response.ok) throw new Error("Could not load your bag.");
+
+            const data = await response.json();
+            cart = (Array.isArray(data) ? data : []).map(item => ({
+                id: Number(item.productId),
+                productId: Number(item.productId),
+                name: item.productName || ("Product #" + item.productId),
+                image: item.imageUrl || "",
+                price: Number(item.price) || 0,
+                qty: Number(item.quantity) || 0
+            }));
+            updateCart();
+        } catch (error) {
+            console.error("Could not load cart:", error);
+            cart = [];
+            updateCart();
+        }
     }
 
+    async function postCartAction(action, productId, quantity) {
+        const params = new URLSearchParams({ productId: String(productId) });
+        if (quantity !== undefined) params.set("quantity", String(quantity));
 
-    function changeQty(id, delta) {
+        const response = await fetch("cart?action=" + encodeURIComponent(action), {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+                "Accept": "application/json"
+            },
+            credentials: "same-origin",
+            body: params.toString()
+        });
 
-        const item = cart.find(
-            item => item.id === id
-        );
-
-        if (!item) {
-            return;
+        if (response.status === 401) {
+            alert("Please log in to use your shopping bag.");
+            window.location.href = "login.html";
+            return false;
         }
 
-        item.qty += delta;
+        let result = {};
+        try { result = await response.json(); } catch (_) {}
 
-        if (item.qty <= 0) {
-
-            cart = cart.filter(
-                item => item.id !== id
-            );
+        if (!response.ok || !result.success) {
+            alert(result.message || "Could not update your bag. Please check available stock and try again.");
+            return false;
         }
-
-        updateCart();
+        await loadCart();
+        return true;
     }
 
+    async function addToCart(id) {
+        const product = products.find(product => Number(product.id) === Number(id));
+        if (!product) return;
 
-    function removeFromCart(id) {
-
-        cart = cart.filter(
-            item => item.id !== id
-        );
-
-        updateCart();
+        const existingItem = cart.find(item => Number(item.id) === Number(id));
+        const quantity = existingItem ? Number(existingItem.qty) + 1 : 1;
+        const added = await postCartAction("add", id, 1);
+        if (added) openCart();
     }
 
+    async function changeQty(id, delta) {
+        const item = cart.find(item => Number(item.id) === Number(id));
+        if (!item) return;
+        const quantity = Number(item.qty) + delta;
+        await postCartAction("update", id, quantity);
+    }
+
+    async function removeFromCart(id) {
+        await postCartAction("remove", id);
+    }
 
     function updateCart() {
+        const cartCount = document.getElementById("cartCount");
+        const cartItems = document.getElementById("cartItems");
+        const cartTotal = document.getElementById("cartTotal");
 
-        const cartCount =
-            document.getElementById("cartCount");
-
-        const cartItems =
-            document.getElementById("cartItems");
-
-        const cartTotal =
-            document.getElementById("cartTotal");
-
-        const totalQty = cart.reduce(
-            (sum, item) =>
-                sum + item.qty,
-            0
-        );
-
-        const totalPrice = cart.reduce(
-            (sum, item) =>
-                sum + (Number(item.price) * item.qty),
-            0
-        );
+        const totalQty = cart.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
+        const totalPrice = cart.reduce((sum, item) =>
+            sum + ((Number(item.price) || 0) * (Number(item.qty) || 0)), 0);
 
         cartCount.textContent = totalQty;
-
-        cartTotal.textContent =
-            totalPrice.toFixed(2);
+        cartTotal.textContent = totalPrice.toFixed(2);
 
         if (cart.length === 0) {
-
-            cartItems.innerHTML =
-                "<p style='text-align:center; padding:30px; color:#756b6b;'>Your bag is empty.</p>";
-
+            cartItems.innerHTML = "<p style='text-align:center;padding:30px;color:#756b6b;'>Your bag is empty.</p>";
             return;
         }
 
         cartItems.innerHTML = cart.map(item => `
-
             <div class="cart-item">
-
-                <img
-                    src="${item.image || ''}"
-                    alt="${item.name}"
-                >
-
+                <img src="${item.image || ''}" alt="${item.name || 'Product'}">
                 <div class="cart-item-info">
-
-                    <h4>
-                        ${item.name}
-                    </h4>
-
-                    <p class="cart-price">
-                        ₹${Number(item.price).toLocaleString("en-IN")}
-                    </p>
-
+                    <h4>${item.name || 'Product'}</h4>
+                    <p class="cart-price">₹${Number(item.price || 0).toLocaleString("en-IN")}</p>
                     <div class="quantity">
-
-                        <button
-                            onclick="changeQty(${item.id}, -1)">
-                            -
-                        </button>
-
-                        <span>
-                            ${item.qty}
-                        </span>
-
-                        <button
-                            onclick="changeQty(${item.id}, 1)">
-                            +
-                        </button>
-
-                        <button
-                            class="remove-item"
-                            onclick="removeFromCart(${item.id})">
-                            Remove
-                        </button>
-
+                        <button onclick="changeQty(${item.id}, -1)" aria-label="Decrease quantity">-</button>
+                        <span>${item.qty}</span>
+                        <button onclick="changeQty(${item.id}, 1)" aria-label="Increase quantity">+</button>
+                        <button class="remove-item" onclick="removeFromCart(${item.id})">Remove</button>
                     </div>
-
                 </div>
-
             </div>
-
         `).join("");
     }
-
 
     /* ================================
        WISHLIST
@@ -2632,7 +2535,7 @@
 
     loadProducts();
 
-    updateCart();
+    loadCart();
 
 </script>
 
