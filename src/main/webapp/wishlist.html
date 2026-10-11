@@ -461,177 +461,8 @@
 </section>
 
 
-<!-- WISHLIST -->
-
-<section
-    class="wishlist-grid"
-    id="wishlistGrid"
->
-
-    <!-- PRODUCT 1 -->
-
-    <article class="product-card">
-
-        <button
-            class="remove-button"
-            onclick="removeItem(this)"
-            aria-label="Remove from wishlist"
-        >
-            ♡
-        </button>
-
-
-        <img
-            class="product-image"
-            src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=700&q=80"
-            alt="Elegant Handbag"
-        >
-
-
-        <div class="product-info">
-
-            <div class="category">
-                Fashion
-            </div>
-
-            <h2>
-                Elegant Handbag
-            </h2>
-
-            <p class="description">
-                Stylish and spacious handbag for everyday use.
-            </p>
-
-
-            <div class="product-bottom">
-
-                <span class="price">
-                    ₹1,499
-                </span>
-
-                <button
-                    class="bag-button"
-                    onclick="addToBag('Elegant Handbag')"
-                >
-                    ADD TO BAG
-                </button>
-
-            </div>
-
-        </div>
-
-    </article>
-
-
-    <!-- PRODUCT 2 -->
-
-    <article class="product-card">
-
-        <button
-            class="remove-button"
-            onclick="removeItem(this)"
-            aria-label="Remove from wishlist"
-        >
-            ♡
-        </button>
-
-
-        <img
-            class="product-image"
-            src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=700&q=80"
-            alt="Classic Watch"
-        >
-
-
-        <div class="product-info">
-
-            <div class="category">
-                Fashion
-            </div>
-
-            <h2>
-                Classic Watch
-            </h2>
-
-            <p class="description">
-                A timeless everyday watch with a clean finish.
-            </p>
-
-
-            <div class="product-bottom">
-
-                <span class="price">
-                    ₹2,299
-                </span>
-
-                <button
-                    class="bag-button"
-                    onclick="addToBag('Classic Watch')"
-                >
-                    ADD TO BAG
-                </button>
-
-            </div>
-
-        </div>
-
-    </article>
-
-
-    <!-- PRODUCT 3 -->
-
-    <article class="product-card">
-
-        <button
-            class="remove-button"
-            onclick="removeItem(this)"
-            aria-label="Remove from wishlist"
-        >
-            ♡
-        </button>
-
-
-        <img
-            class="product-image"
-            src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=700&q=80"
-            alt="Wireless Headphones"
-        >
-
-
-        <div class="product-info">
-
-            <div class="category">
-                Electronics
-            </div>
-
-            <h2>
-                Wireless Headphones
-            </h2>
-
-            <p class="description">
-                Comfortable wireless headphones for music and everyday use.
-            </p>
-
-
-            <div class="product-bottom">
-
-                <span class="price">
-                    ₹2,999
-                </span>
-
-                <button
-                    class="bag-button"
-                    onclick="addToBag('Wireless Headphones')"
-                >
-                    ADD TO BAG
-                </button>
-
-            </div>
-
-        </div>
-
-    </article>
-
+<!-- WISHLIST: loaded from the signed-in user's database records -->
+<section class="wishlist-grid" id="wishlistGrid" aria-live="polite">
 </section>
 
 
@@ -677,44 +508,130 @@
 </footer>
 
 <script>
+    const wishlistGrid = document.getElementById("wishlistGrid");
+    const emptyState = document.getElementById("emptyState");
 
-    function removeItem(button) {
+    async function loadWishlist() {
+        wishlistGrid.style.display = "grid";
+        wishlistGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:50px;color:#806c6c;">Loading your wishlist...</p>';
 
-        const card = button.closest(".product-card");
+        try {
+            const response = await fetch("wishlist", {
+                headers: { "Accept": "application/json" },
+                credentials: "same-origin"
+            });
 
-        card.remove();
+            if (response.status === 401) {
+                window.location.href = "login.html";
+                return;
+            }
+            if (!response.ok) throw new Error("Wishlist request failed.");
 
-        checkEmpty();
-
+            const products = await response.json();
+            if (!Array.isArray(products)) throw new Error("Invalid wishlist response.");
+            renderWishlist(products);
+        } catch (error) {
+            console.error("Could not load wishlist:", error);
+            emptyState.style.display = "none";
+            wishlistGrid.style.display = "grid";
+            wishlistGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:50px;color:#8f0000;">Your wishlist could not be loaded. Please refresh and try again.</p>';
+        }
     }
 
-
-    function checkEmpty() {
-
-        const grid = document.getElementById("wishlistGrid");
-
-        const emptyState = document.getElementById("emptyState");
-
-        if (grid.children.length === 0) {
-
-            grid.style.display = "none";
-
+    function renderWishlist(products) {
+        if (!products.length) {
+            wishlistGrid.style.display = "none";
             emptyState.style.display = "block";
-
+            return;
         }
 
+        emptyState.style.display = "none";
+        wishlistGrid.style.display = "grid";
+        wishlistGrid.innerHTML = products.map(product => {
+            const image = product.imageUrl || "";
+            const price = Number(product.price || 0).toLocaleString("en-IN");
+            return `
+                <article class="product-card">
+                    <button class="remove-button" type="button"
+                        onclick="removeFromWishlist(${Number(product.id)})"
+                        aria-label="Remove ${escapeHtml(product.name)} from wishlist">×</button>
+                    <img class="product-image" src="${escapeHtml(image)}"
+                        alt="${escapeHtml(product.name)}" loading="lazy">
+                    <div class="product-info">
+                        <div class="category">${escapeHtml(product.category || "General")}</div>
+                        <h2>${escapeHtml(product.name || "Product")}</h2>
+                        <p class="description">${escapeHtml(product.description || "")}</p>
+                        <div class="product-bottom">
+                            <span class="price">₹${price}</span>
+                            <button class="bag-button" type="button"
+                                onclick="addToBag(${Number(product.id)}, this)">ADD TO BAG</button>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }).join("");
     }
 
-
-    function addToBag(productName) {
-
-        alert(
-            productName +
-            " has been added to your bag."
-        );
-
+    async function removeFromWishlist(productId) {
+        try {
+            const body = new URLSearchParams({ action: "remove", productId: String(productId) });
+            const response = await fetch("wishlist", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+                credentials: "same-origin",
+                body: body.toString()
+            });
+            if (response.status === 401) {
+                window.location.href = "login.html";
+                return;
+            }
+            if (!response.ok) throw new Error("Could not remove this item.");
+            const result = await response.json();
+            if (!result.success) throw new Error("The item was not removed.");
+            await loadWishlist();
+        } catch (error) {
+            console.error(error);
+            alert(error.message || "Could not remove this item. Please try again.");
+        }
     }
 
+    async function addToBag(productId, button) {
+        button.disabled = true;
+        try {
+            const body = new URLSearchParams({ action: "add", productId: String(productId), quantity: "1" });
+            const response = await fetch("cart", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+                credentials: "same-origin",
+                body: body.toString()
+            });
+            if (response.status === 401) {
+                window.location.href = "login.html";
+                return;
+            }
+            if (!response.ok) throw new Error("Could not add this item to your bag.");
+            button.textContent = "ADDED";
+            window.setTimeout(() => {
+                button.textContent = "ADD TO BAG";
+                button.disabled = false;
+            }, 1000);
+        } catch (error) {
+            console.error(error);
+            alert(error.message || "Could not add this item to your bag.");
+            button.disabled = false;
+        }
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    loadWishlist();
 </script>
 
 </body>

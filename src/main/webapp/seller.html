@@ -274,6 +274,42 @@
     }
 
 
+    .seller-orders-section {
+        margin-top: 42px;
+    }
+
+    .orders-table {
+        min-width: 980px;
+    }
+
+    .order-items-list {
+        min-width: 190px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.7;
+    }
+
+    .order-delivery {
+        min-width: 190px;
+        font-size: 11px;
+        line-height: 1.7;
+    }
+
+    .order-status-select {
+        min-width: 125px;
+        border: 1px solid var(--border);
+        background: var(--warm-white);
+        padding: 9px 10px;
+        color: var(--text);
+        font: inherit;
+        font-size: 11px;
+    }
+
+    .order-status-select:disabled {
+        opacity: 0.65;
+        cursor: wait;
+    }
+
     /* ================= ACTIONS ================= */
 
     .actions {
@@ -708,6 +744,31 @@
 
     </section>
 
+    <!-- ================= SELLER ORDERS ================= -->
+    <section class="seller-orders-section">
+        <div class="section-title">
+            <h2>Incoming orders</h2>
+            <span id="sellerOrderCount">Loading orders...</span>
+        </div>
+        <div id="sellerOrderMessage" class="message" style="display:none;" aria-live="polite"></div>
+        <div class="table-wrapper">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>Delivery details</th>
+                        <th>Your items</th>
+                        <th>Order total</th>
+                        <th>Update status</th>
+                    </tr>
+                </thead>
+                <tbody id="sellerOrdersTable">
+                    <tr><td colspan="5" style="text-align:center;padding:24px;">Loading incoming orders...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
 </main>
 
 
@@ -725,7 +786,7 @@
             class="close-button"
             onclick="closeProductModal()">
 
-            Ã—
+            &#215;
 
         </button>
 
@@ -885,7 +946,7 @@
 
 <footer>
 
-    Aishwarya Mart Â· Seller Dashboard
+    Aishwarya Mart &#183; Seller Dashboard
 
 </footer>
 
@@ -893,43 +954,59 @@
 
 <script>
 
-    /* ==========================================
-       DEMO PRODUCT DATA
-       ========================================== */
-
-    let products = [
-        {
-            id: 1,
-            name: "Elegant Handbag",
-            description: "Stylish and spacious handbag for everyday use.",
-            price: 1499,
-            stock: 20,
-            category: "Fashion",
-            imageUrl: ""
-        },
-        {
-            id: 2,
-            name: "Classic Watch",
-            description: "Elegant everyday watch.",
-            price: 2299,
-            stock: 12,
-            category: "Fashion",
-            imageUrl: ""
-        },
-        {
-            id: 3,
-            name: "Wireless Headphones",
-            description: "Comfortable wireless headphones.",
-            price: 1999,
-            stock: 7,
-            category: "Electronics",
-            imageUrl: ""
-        }
-    ];
-
-
+    let products = [];
     let editingId = null;
 
+    async function loadProducts() {
+        const table = document.getElementById("productTable");
+        table.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;">Loading your products...</td></tr>';
+        try {
+            const authResponse = await fetch("auth?action=me", {
+                headers: { "Accept": "application/json" },
+                credentials: "same-origin"
+            });
+            if (!authResponse.ok) throw new Error("Could not verify the signed-in account.");
+            const account = await authResponse.json();
+            if (!account.loggedIn) {
+                window.location.href = "login.html";
+                return;
+            }
+            if (account.role !== "SELLER" && account.role !== "ADMIN") {
+                throw new Error("Please log in with a seller account to manage products.");
+            }
+
+            const response = await fetch("products?action=mine", {
+                headers: { "Accept": "application/json" },
+                credentials: "same-origin"
+            });
+            if (response.status === 401 || response.status === 403) {
+                throw new Error("Please log in with a seller account to manage products.");
+            }
+            if (!response.ok) throw new Error("Could not load your products.");
+
+            let data = await response.json();
+            if (!Array.isArray(data)) throw new Error("The server returned an invalid product list.");
+
+            // Defense in depth: a seller dashboard must never display another seller's inventory.
+            if (account.role === "SELLER") {
+                data = data.filter(product => Number(product.sellerId) === Number(account.userId));
+            }
+
+            products = data.map(product => ({
+                ...product,
+                id: Number(product.id),
+                price: Number(product.price) || 0,
+                stock: Number(product.stockQty) || 0,
+                imageUrl: product.imageUrl || ""
+            }));
+            renderProducts();
+        } catch (error) {
+            console.error(error);
+            products = [];
+            renderProducts();
+            showFormMessage(error.message || "Could not load your products.");
+        }
+    }
 
     /* ==========================================
        RENDER PRODUCTS
@@ -984,7 +1061,7 @@
 
                     <td>
                         <span class="price">
-                            â‚¹${Number(product.price).toFixed(2)}
+                            &#8377;${Number(product.price).toFixed(2)}
                         </span>
                     </td>
 
@@ -1180,191 +1257,113 @@
        DELETE PRODUCT
        ========================================== */
 
-    function deleteProduct(id) {
+    async function deleteProduct(id) {
+        const product = products.find(item => Number(item.id) === Number(id));
+        if (!product) return;
+        if (!confirm('Delete "' + product.name + '"?')) return;
 
-        const product =
-            products.find(function(item) {
-
-                return item.id === id;
-
+        try {
+            const body = new URLSearchParams({ id: String(id) });
+            const response = await fetch("products?action=delete", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+                    "Accept": "text/html"
+                },
+                credentials: "same-origin",
+                body: body.toString()
             });
+            if (response.status === 401 || response.status === 403) {
+                showFormMessage("You do not have permission to delete this product.");
+                return;
+            }
+            if (!response.ok) throw new Error("Could not delete this product.");
 
-
-        if (!product) {
-            return;
+            const finalUrl = new URL(response.url);
+            if (finalUrl.searchParams.has("error")) {
+                throw new Error("The product could not be deleted. It may be linked to an order.");
+            }
+            await loadProducts();
+        } catch (error) {
+            console.error(error);
+            showFormMessage(error.message || "Could not delete this product.");
         }
-
-
-        const confirmed =
-            confirm(
-                "Delete \"" +
-                product.name +
-                "\"?"
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        products =
-            products.filter(function(item) {
-
-                return item.id !== id;
-
-            });
-
-
-        renderProducts();
-
     }
-
 
     /* ==========================================
        SAVE PRODUCT
        ========================================== */
 
-    document.getElementById("productForm")
-        .addEventListener(
-            "submit",
-            function(event) {
+    document.getElementById("productForm").addEventListener("submit", async function(event) {
+        event.preventDefault();
 
-                event.preventDefault();
+        const name = document.getElementById("productName").value.trim();
+        const description = document.getElementById("description").value.trim();
+        const price = Number(document.getElementById("price").value);
+        const stock = Number(document.getElementById("stock").value);
+        const category = document.getElementById("category").value;
+        const imageUrl = document.getElementById("imageUrl").value.trim();
 
+        if (!name || !category || !Number.isFinite(price) || !Number.isFinite(stock)) {
+            showFormMessage("Please fill in all required fields with valid numbers.");
+            return;
+        }
+        if (price < 0 || stock < 0) {
+            showFormMessage("Price and stock cannot be negative.");
+            return;
+        }
 
-                const name =
-                    document.getElementById("productName")
-                        .value.trim();
+        const action = editingId !== null ? "update" : "add";
+        const body = new URLSearchParams({
+            name, description, price: String(price), stockQty: String(stock),
+            category, imageUrl
+        });
+        if (editingId !== null) body.set("id", String(editingId));
 
+        const submitButton = document.querySelector('#productForm button[type="submit"]');
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = "Saving...";
+        }
 
-                const description =
-                    document.getElementById("description")
-                        .value.trim();
+        try {
+            const response = await fetch("products?action=" + action, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+                    "Accept": "text/html"
+                },
+                credentials: "same-origin",
+                body: body.toString()
+            });
 
-
-                const price =
-                    Number(
-                        document.getElementById("price")
-                            .value
-                    );
-
-
-                const stock =
-                    Number(
-                        document.getElementById("stock")
-                            .value
-                    );
-
-
-                const category =
-                    document.getElementById("category")
-                        .value;
-
-
-                const imageUrl =
-                    document.getElementById("imageUrl")
-                        .value.trim();
-
-
-                if (!name || !category) {
-
-                    showFormMessage(
-                        "Please fill in all required fields."
-                    );
-
-                    return;
-
-                }
-
-
-                if (price < 0 || stock < 0) {
-
-                    showFormMessage(
-                        "Price and stock cannot be negative."
-                    );
-
-                    return;
-
-                }
-
-
-                /* EDIT */
-
-                if (editingId !== null) {
-
-                    const product =
-                        products.find(function(item) {
-
-                            return item.id === editingId;
-
-                        });
-
-
-                    if (product) {
-
-                        product.name =
-                            name;
-
-                        product.description =
-                            description;
-
-                        product.price =
-                            price;
-
-                        product.stock =
-                            stock;
-
-                        product.category =
-                            category;
-
-                        product.imageUrl =
-                            imageUrl;
-
-                    }
-
-                }
-
-
-                /* ADD */
-
-                else {
-
-                    products.push({
-
-                        id:
-                            Date.now(),
-
-                        name:
-                            name,
-
-                        description:
-                            description,
-
-                        price:
-                            price,
-
-                        stock:
-                            stock,
-
-                        category:
-                            category,
-
-                        imageUrl:
-                            imageUrl
-
-                    });
-
-                }
-
-
-                renderProducts();
-
-                closeProductModal();
-
+            if (response.status === 401 || response.status === 403) {
+                throw new Error("Please log in with a seller account to save products.");
             }
-        );
+            if (!response.ok) throw new Error("Could not save this product.");
 
+            const finalUrl = new URL(response.url);
+            const errorCode = finalUrl.searchParams.get("error");
+            if (errorCode) {
+                const messages = {
+                    invalid: "Please check the product details and try again.",
+                    failed: "The product could not be saved. Please try again."
+                };
+                throw new Error(messages[errorCode] || "Could not save this product.");
+            }
+
+            closeProductModal();
+            await loadProducts();
+        } catch (error) {
+            console.error(error);
+            showFormMessage(error.message || "Could not save this product.");
+        } finally {
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = "Save product";
+            }
+        }
+    });
 
     /* ==========================================
        FORM MESSAGE
@@ -1426,10 +1425,132 @@
 
 
     /* ==========================================
+       INCOMING ORDERS
+       ========================================== */
+
+    async function loadSellerOrders() {
+        const table = document.getElementById("sellerOrdersTable");
+        const count = document.getElementById("sellerOrderCount");
+        table.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;">Loading incoming orders...</td></tr>';
+
+        try {
+            const response = await fetch("orders", {
+                headers: { "Accept": "application/json" },
+                credentials: "same-origin"
+            });
+            if (response.status === 401) {
+                window.location.href = "login.html";
+                return;
+            }
+            if (response.status === 403) throw new Error("A seller account is required to view incoming orders.");
+            if (!response.ok) throw new Error("Could not load incoming orders.");
+
+            const orders = await response.json();
+            if (!Array.isArray(orders)) throw new Error("The server returned an invalid order list.");
+
+            count.textContent = orders.length + (orders.length === 1 ? " order" : " orders");
+            if (!orders.length) {
+                table.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--muted);">No incoming orders yet. Orders containing your products will appear here.</td></tr>';
+                return;
+            }
+
+            table.innerHTML = orders.map(order => {
+                const id = Number(order.id);
+                const status = String(order.status || "PENDING").toUpperCase();
+                const date = order.createdAt ? new Date(order.createdAt).toLocaleString() : "—";
+                const delivery = [
+                    order.deliveryName || "Customer",
+                    order.deliveryPhone || "",
+                    order.deliveryAddress || "",
+                    [order.deliveryCity || "", order.deliveryPincode || ""].filter(Boolean).join(" "),
+                    order.deliveryEmail || ""
+                ].filter(Boolean).map(escapeHtml).join("<br>");
+                const statuses = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"];
+                const options = statuses.map(value =>
+                    '<option value="' + value + '"' + (value === status ? " selected" : "") + '>' +
+                    value.charAt(0) + value.slice(1).toLowerCase() + '</option>'
+                ).join("");
+
+                return '<tr>' +
+                    '<td><strong>#' + id + '</strong><br><small>' + escapeHtml(date) + '</small></td>' +
+                    '<td><div class="order-delivery">' + (delivery || "Delivery details unavailable") + '</div></td>' +
+                    '<td><div class="order-items-list" id="seller-order-items-' + id + '">Loading items...</div></td>' +
+                    '<td class="price">₹' + Number(order.totalAmount || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>' +
+                    '<td><select class="order-status-select" aria-label="Status for order ' + id + '" onchange="updateSellerOrderStatus(' + id + ', this.value, this)">' + options + '</select></td>' +
+                    '</tr>';
+            }).join("");
+
+            await Promise.all(orders.map(async order => {
+                const target = document.getElementById("seller-order-items-" + Number(order.id));
+                if (!target) return;
+                try {
+                    const itemResponse = await fetch("orders?action=items&orderId=" + encodeURIComponent(order.id), {
+                        headers: { "Accept": "application/json" },
+                        credentials: "same-origin"
+                    });
+                    if (!itemResponse.ok) throw new Error("Items could not be loaded.");
+                    const items = await itemResponse.json();
+                    target.innerHTML = Array.isArray(items) && items.length
+                        ? items.map(item => escapeHtml(item.productName || "Product") + " × " + Number(item.quantity || 0)).join("<br>")
+                        : "No items found";
+                } catch (error) {
+                    console.error(error);
+                    target.textContent = "Items could not be loaded";
+                }
+            }));
+        } catch (error) {
+            console.error(error);
+            count.textContent = "Unavailable";
+            table.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--burgundy);">' + escapeHtml(error.message || "Could not load incoming orders.") + '</td></tr>';
+        }
+    }
+
+    async function updateSellerOrderStatus(orderId, status, select) {
+        const previousStatus = select.dataset.previousStatus || select.querySelector("option[selected]")?.value || "PENDING";
+        select.disabled = true;
+        try {
+            const body = new URLSearchParams({
+                action: "status",
+                orderId: String(orderId),
+                status: status
+            });
+            const response = await fetch("orders", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8", "Accept": "application/json" },
+                credentials: "same-origin",
+                body: body.toString()
+            });
+            if (response.status === 401) {
+                window.location.href = "login.html";
+                return;
+            }
+            if (!response.ok) throw new Error("The order status could not be updated.");
+            const result = await response.json();
+            if (!result.success) throw new Error("This order could not be updated for your seller account.");
+            select.dataset.previousStatus = status;
+            showOrderMessage("Order #" + orderId + " updated to " + status.toLowerCase() + ".", true);
+        } catch (error) {
+            console.error(error);
+            alert(error.message || "Could not update order status.");
+            await loadSellerOrders();
+        } finally {
+            select.disabled = false;
+        }
+    }
+
+    function showOrderMessage(message, success) {
+        const element = document.getElementById("sellerOrderMessage");
+        element.textContent = message;
+        element.className = "message " + (success ? "success" : "error");
+        element.style.display = "block";
+    }
+
+    /* ==========================================
        INITIAL LOAD
        ========================================== */
 
-    renderProducts();
+    loadProducts();
+    loadSellerOrders();
 
 </script>
 

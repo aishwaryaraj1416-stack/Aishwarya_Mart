@@ -93,6 +93,13 @@ CREATE TABLE IF NOT EXISTS orders (
     user_id INT NOT NULL,
     total_amount DECIMAL(10,2) NOT NULL,
     status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
+    delivery_name VARCHAR(120),
+    delivery_email VARCHAR(150),
+    delivery_phone VARCHAR(30),
+    delivery_address VARCHAR(500),
+    delivery_city VARCHAR(100),
+    delivery_pincode VARCHAR(20),
+    payment_method VARCHAR(20) DEFAULT 'COD',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_order_user
@@ -111,6 +118,15 @@ CREATE TABLE IF NOT EXISTS orders (
             )
         )
 );
+
+-- Add checkout details to databases created by earlier versions.
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_name VARCHAR(120);
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_email VARCHAR(150);
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_phone VARCHAR(30);
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_address VARCHAR(500);
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_city VARCHAR(100);
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_pincode VARCHAR(20);
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_method VARCHAR(20) DEFAULT 'COD';
 
 CREATE INDEX IF NOT EXISTS idx_orders_user
     ON orders(user_id);

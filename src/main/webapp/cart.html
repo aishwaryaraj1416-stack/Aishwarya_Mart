@@ -591,7 +591,7 @@
                     </span>
 
                     <strong id="subtotal">
-                        â‚¹0.00
+                        &#8377;0.00
                     </strong>
 
                 </div>
@@ -617,7 +617,7 @@
                     </span>
 
                     <strong id="total">
-                        â‚¹0.00
+                        &#8377;0.00
                     </strong>
 
                 </div>
@@ -636,7 +636,7 @@
                     href="index.html"
                     class="continue">
 
-                    â† Continue shopping
+                    &#8592; Continue shopping
 
                 </a>
 
@@ -655,7 +655,7 @@
         id="emptyCart">
 
         <div class="symbol">
-            ðŸ›ï¸
+            &#128722;
         </div>
 
         <h2>
@@ -684,285 +684,172 @@
 
 <footer>
 
-    Aishwarya Mart Â· Fashion Â· Beauty Â· Everyday Essentials
+    Aishwarya Mart &#183; Fashion &#183; Beauty &#183; Everyday Essentials
 
 </footer>
 
 
 
 <script>
-
-    /* ==========================================
-       CART DATA
-       ========================================== */
-
-    let cart = [
-
-        {
-            id: 1,
-            name: "Elegant Handbag",
-            category: "Fashion",
-            price: 1499,
-            quantity: 1,
-            image:
-                "https://images.unsplash.com/photo-1584917865442-de89df76afd3"
-        },
-
-        {
-            id: 2,
-            name: "Classic Watch",
-            category: "Fashion",
-            price: 2299,
-            quantity: 1,
-            image:
-                "https://images.unsplash.com/photo-1524805444758-089113d48a6d"
-        }
-
-    ];
-
-
-    /* ==========================================
-       RENDER CART
-       ========================================== */
-
-    function renderCart() {
-
-        const cartList =
-            document.getElementById("cartList");
-
-        const cartContent =
-            document.getElementById("cartContent");
-
-        const emptyCart =
-            document.getElementById("emptyCart");
-
-
-        cartList.innerHTML = "";
-
-
-        if (cart.length === 0) {
-
-            cartContent.style.display = "none";
-
-            emptyCart.style.display = "block";
-
-            updateSummary();
-
-            return;
-
-        }
-
-
-        cartContent.style.display = "block";
-
-        emptyCart.style.display = "none";
-
-
-        cart.forEach(function(item) {
-
-            const element =
-                document.createElement("div");
-
-            element.className =
-                "cart-item";
-
-
-            element.innerHTML = `
-
-                <div class="product-image">
-
-                    <img
-                        src="${escapeHtml(item.image)}"
-                        alt="${escapeHtml(item.name)}">
-
-                </div>
-
-
-                <div class="product-info">
-
-                    <div class="category">
-                        ${escapeHtml(item.category)}
-                    </div>
-
-                    <h3>
-                        ${escapeHtml(item.name)}
-                    </h3>
-
-                    <p class="product-price">
-                        â‚¹${Number(item.price).toFixed(2)}
-                    </p>
-
-                </div>
-
-
-                <div class="item-right">
-
-                    <div class="item-total">
-                        â‚¹${(item.price * item.quantity).toFixed(2)}
-                    </div>
-
-
-                    <div class="quantity">
-
-                        <button
-                            onclick="changeQuantity(${item.id}, -1)">
-                            âˆ’
-                        </button>
-
-                        <span>
-                            ${item.quantity}
-                        </span>
-
-                        <button
-                            onclick="changeQuantity(${item.id}, 1)">
-                            +
-                        </button>
-
-                    </div>
-
-
-                    <button
-                        class="remove"
-                        onclick="removeItem(${item.id})">
-
-                        Remove
-
-                    </button>
-
-                </div>
-
-            `;
-
-
-            cartList.appendChild(element);
-
-        });
-
-
-        updateSummary();
-
-    }
-
-
-    /* ==========================================
-       CHANGE QUANTITY
-       ========================================== */
-
-    function changeQuantity(id, change) {
-
-        const item =
-            cart.find(function(product) {
-
-                return product.id === id;
-
-            });
-
-
-        if (!item) {
-            return;
-        }
-
-
-        item.quantity += change;
-
-
-        if (item.quantity <= 0) {
-
-            removeItem(id);
-
-            return;
-
-        }
-
-
-        renderCart();
-
-    }
-
-
-    /* ==========================================
-       REMOVE ITEM
-       ========================================== */
-
-    function removeItem(id) {
-
-        cart =
-            cart.filter(function(item) {
-
-                return item.id !== id;
-
-            });
-
-
-        renderCart();
-
-    }
-
-
-    /* ==========================================
-       UPDATE SUMMARY
-       ========================================== */
-
-    function updateSummary() {
-
-        let subtotal = 0;
-
-        let itemCount = 0;
-
-
-        cart.forEach(function(item) {
-
-            subtotal +=
-                item.price * item.quantity;
-
-            itemCount +=
-                item.quantity;
-
-        });
-
-
-        document.getElementById("subtotal")
-            .textContent =
-            "â‚¹" + subtotal.toFixed(2);
-
-
-        document.getElementById("total")
-            .textContent =
-            "â‚¹" + subtotal.toFixed(2);
-
-
-        document.getElementById("itemCount")
-            .textContent =
-            itemCount === 1
-                ? "1 item"
-                : itemCount + " items";
-
-    }
-
-
-    /* ==========================================
-       ESCAPE HTML
-       ========================================== */
+    let cart = [];
 
     function escapeHtml(value) {
-
-        const div =
-            document.createElement("div");
-
-        div.textContent =
-            value;
-
-        return div.innerHTML;
-
+        return String(value == null ? "" : value)
+            .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;").replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
 
+    function formatMoney(value) {
+        return Number(value || 0).toLocaleString("en-IN", {
+            minimumFractionDigits: 2, maximumFractionDigits: 2
+        });
+    }
 
-    /* ==========================================
-       INITIAL LOAD
-       ========================================== */
+    async function loadCart() {
+        const cartList = document.getElementById("cartList");
+        cartList.innerHTML = '<p class="note">Loading your bag...</p>';
+        try {
+            const response = await fetch("cart", {
+                headers: { "Accept": "application/json" },
+                credentials: "same-origin"
+            });
+            if (response.status === 401) {
+                window.location.href = "login.html";
+                return;
+            }
+            if (!response.ok) throw new Error("Could not load your bag.");
+            cart = await response.json();
+            if (!Array.isArray(cart)) cart = [];
+            renderCart();
+        } catch (error) {
+            console.error(error);
+            cartList.innerHTML = '<p class="note">Could not load your bag. Please refresh the page.</p>';
+        }
+    }
 
-    renderCart();
+    function renderCart() {
+        const cartList = document.getElementById("cartList");
+        const cartContent = document.getElementById("cartContent");
+        const emptyCart = document.getElementById("emptyCart");
+        cartList.innerHTML = "";
 
+        if (!cart.length) {
+            cartContent.style.display = "none";
+            emptyCart.style.display = "block";
+            updateSummary();
+            return;
+        }
+
+        cartContent.style.display = "block";
+        emptyCart.style.display = "none";
+
+        cart.forEach(item => {
+            const id = Number(item.productId);
+            const quantity = Number(item.quantity) || 0;
+            const price = Number(item.price) || 0;
+            const image = item.imageUrl
+                ? '<img src="' + escapeHtml(item.imageUrl) + '" alt="' + escapeHtml(item.productName || "Product") + '" onerror="this.style.display=\'none\'">'
+                : '<span aria-hidden="true">✦</span>';
+
+            const element = document.createElement("div");
+            element.className = "cart-item";
+            element.innerHTML = `
+                <div class="product-image">${image}</div>
+                <div class="product-info">
+                    <div class="category">AISHWARYA MART</div>
+                    <h3>${escapeHtml(item.productName || ("Product #" + id))}</h3>
+                    <p class="product-price">&#8377;${formatMoney(price)}</p>
+                </div>
+                <div class="item-right">
+                    <div class="item-total">&#8377;${formatMoney(price * quantity)}</div>
+                    <div class="quantity">
+                        <button type="button" aria-label="Decrease quantity" onclick="changeQuantity(${id}, -1)">−</button>
+                        <span>${quantity}</span>
+                        <button type="button" aria-label="Increase quantity" onclick="changeQuantity(${id}, 1)">+</button>
+                    </div>
+                    <button type="button" class="remove" onclick="removeItem(${id})">Remove</button>
+                </div>`;
+            cartList.appendChild(element);
+        });
+        updateSummary();
+    }
+
+    async function updateCartItem(productId, quantity) {
+        const body = new URLSearchParams({
+            productId: String(productId),
+            quantity: String(quantity)
+        });
+        const response = await fetch("cart?action=update", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8", "Accept": "application/json" },
+            credentials: "same-origin",
+            body: body.toString()
+        });
+        if (response.status === 401) {
+            window.location.href = "login.html";
+            return false;
+        }
+        if (!response.ok) {
+            let message = "Could not update your bag. Check available stock.";
+            try { const data = await response.json(); if (data.message) message = data.message; } catch (_) {}
+            alert(message);
+            return false;
+        }
+        const result = await response.json();
+        if (!result.success) {
+            alert("Could not update your bag. Check available stock.");
+            return false;
+        }
+        await loadCart();
+        return true;
+    }
+
+    async function changeQuantity(productId, change) {
+        const item = cart.find(product => Number(product.productId) === Number(productId));
+        if (!item) return;
+        const quantity = Number(item.quantity) + change;
+        await updateCartItem(productId, quantity);
+    }
+
+    async function removeItem(productId) {
+        const body = new URLSearchParams({ productId: String(productId) });
+        const response = await fetch("cart?action=remove", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8", "Accept": "application/json" },
+            credentials: "same-origin",
+            body: body.toString()
+        });
+        if (response.status === 401) {
+            window.location.href = "login.html";
+            return;
+        }
+        if (!response.ok) {
+            alert("Could not remove this item. Please try again.");
+            return;
+        }
+        const result = await response.json();
+        if (!result.success) {
+            alert("Could not remove this item. Please try again.");
+            return;
+        }
+        await loadCart();
+    }
+
+    function updateSummary() {
+        let subtotal = 0;
+        let itemCount = 0;
+        cart.forEach(item => {
+            subtotal += (Number(item.price) || 0) * (Number(item.quantity) || 0);
+            itemCount += Number(item.quantity) || 0;
+        });
+        document.getElementById("subtotal").textContent = "₹" + formatMoney(subtotal);
+        document.getElementById("total").textContent = "₹" + formatMoney(subtotal);
+        document.getElementById("itemCount").textContent =
+            itemCount === 1 ? "1 item" : itemCount + " items";
+    }
+
+    loadCart();
 </script>
 
 
