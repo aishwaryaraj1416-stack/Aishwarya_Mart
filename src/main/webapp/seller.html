@@ -961,6 +961,20 @@
         const table = document.getElementById("productTable");
         table.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;">Loading your products...</td></tr>';
         try {
+            const authResponse = await fetch("auth?action=me", {
+                headers: { "Accept": "application/json" },
+                credentials: "same-origin"
+            });
+            if (!authResponse.ok) throw new Error("Could not verify the signed-in account.");
+            const account = await authResponse.json();
+            if (!account.loggedIn) {
+                window.location.href = "login.html";
+                return;
+            }
+            if (account.role !== "SELLER" && account.role !== "ADMIN") {
+                throw new Error("Please log in with a seller account to manage products.");
+            }
+
             const response = await fetch("products?action=mine", {
                 headers: { "Accept": "application/json" },
                 credentials: "same-origin"
@@ -970,8 +984,13 @@
             }
             if (!response.ok) throw new Error("Could not load your products.");
 
-            const data = await response.json();
+            let data = await response.json();
             if (!Array.isArray(data)) throw new Error("The server returned an invalid product list.");
+
+            // Defense in depth: a seller dashboard must never display another seller's inventory.
+            if (account.role === "SELLER") {
+                data = data.filter(product => Number(product.sellerId) === Number(account.userId));
+            }
 
             products = data.map(product => ({
                 ...product,
