@@ -333,7 +333,7 @@
         <!-- SUCCESS ICON -->
 
         <div class="success-icon">
-            âœ“
+            &#10003;
         </div>
 
 
@@ -381,7 +381,7 @@
                 </span>
 
                 <strong id="customerName">
-                    â€”
+                    —
                 </strong>
 
             </div>
@@ -394,7 +394,7 @@
                 </span>
 
                 <strong id="customerEmail">
-                    â€”
+                    —
                 </strong>
 
             </div>
@@ -407,7 +407,7 @@
                 </span>
 
                 <strong id="paymentMethod">
-                    â€”
+                    —
                 </strong>
 
             </div>
@@ -420,7 +420,7 @@
                 </span>
 
                 <strong id="deliveryAddress">
-                    â€”
+                    —
                 </strong>
 
             </div>
@@ -467,120 +467,43 @@
 
 <footer>
 
-    Aishwarya Mart Â· Thank you for shopping with us
+    Aishwarya Mart &#183; Thank you for shopping with us
 
 </footer>
 
 
 
 <script>
-
-    /* ==========================================
-       GET LAST ORDER
-       ========================================== */
-
-    const savedOrder =
-        sessionStorage.getItem("lastOrder");
-
-
     let order = null;
-
-
-    if (savedOrder) {
-
-        try {
-
-            order =
-                JSON.parse(savedOrder);
-
-        } catch (error) {
-
-            order = null;
-
-        }
-
+    try {
+        const savedOrder = sessionStorage.getItem("lastOrder");
+        if (savedOrder) order = JSON.parse(savedOrder);
+    } catch (error) {
+        console.error("Could not read checkout confirmation details.", error);
     }
 
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get("orderId") || (order && order.orderId);
 
-    /* ==========================================
-       ORDER NUMBER
-       ========================================== */
-
-    function generateOrderNumber() {
-
-        const number =
-            Math.floor(
-                100000 +
-                Math.random() * 900000
-            );
-
-
-        return "AM-" + number;
-
+    if (!orderId || !order) {
+        document.querySelector(".subtitle").textContent =
+            "Your order confirmation details are unavailable. You can check your order history for the latest status.";
+        document.getElementById("orderNumber").textContent = "See My Orders";
+    } else {
+        document.getElementById("orderNumber").textContent = "AM-" + orderId;
+        document.getElementById("customerName").textContent = order.name || "—";
+        document.getElementById("customerEmail").textContent = order.email || "—";
+        document.getElementById("paymentMethod").textContent = formatPayment(order.payment);
+        document.getElementById("deliveryAddress").textContent =
+            [order.address, order.city, order.pincode].filter(Boolean).join(", ") || "Not provided";
     }
-
-
-    document.getElementById("orderNumber")
-        .textContent =
-        generateOrderNumber();
-
-
-    /* ==========================================
-       DISPLAY ORDER
-       ========================================== */
-
-    if (order) {
-
-        document.getElementById("customerName")
-            .textContent =
-            order.name || "â€”";
-
-
-        document.getElementById("customerEmail")
-            .textContent =
-            order.email || "â€”";
-
-
-        document.getElementById("paymentMethod")
-            .textContent =
-            formatPayment(order.payment);
-
-
-        document.getElementById("deliveryAddress")
-            .textContent =
-            [
-                order.address,
-                order.city,
-                order.pincode
-            ]
-            .filter(Boolean)
-            .join(", ");
-
-    }
-
-
-    /* ==========================================
-       PAYMENT TEXT
-       ========================================== */
 
     function formatPayment(payment) {
-
-        if (payment === "COD") {
-            return "Cash on delivery";
-        }
-
-        if (payment === "UPI") {
-            return "UPI";
-        }
-
-        if (payment === "CARD") {
-            return "Card";
-        }
-
-        return "â€”";
-
+        if (payment === "COD") return "Cash on delivery";
+        if (payment === "UPI") return "Mock UPI payment";
+        if (payment === "CARD") return "Mock card payment";
+        return "—";
     }
-
 </script>
 
 
