@@ -407,167 +407,17 @@
 </section>
 
 <section class="orders-container" id="ordersContainer">
-
-    <!-- ORDER 1 -->
-    <article class="order-card">
-
-        <div class="order-top">
-
-            <div class="order-info">
-
-                <div class="info-item">
-                    <span>Order</span>
-                    <strong>AM-482731</strong>
-                </div>
-
-                <div class="info-item">
-                    <span>Date</span>
-                    <strong>20 Sep 2026</strong>
-                </div>
-
-                <div class="info-item">
-                    <span>Payment</span>
-                    <strong>Cash on Delivery</strong>
-                </div>
-
-            </div>
-
-            <div class="status">Confirmed</div>
-
-        </div>
-
-        <div class="order-body">
-
-            <div class="product-row">
-
-                <img
-                    class="product-image"
-                    src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=300&q=80"
-                    alt="Elegant Handbag"
-                >
-
-                <div class="product-details">
-                    <h3>Elegant Handbag</h3>
-                    <p>Quantity: 1</p>
-                </div>
-
-                <div class="product-price">â‚¹1,499</div>
-
-            </div>
-
-            <div class="product-row">
-
-                <img
-                    class="product-image"
-                    src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=300&q=80"
-                    alt="Classic Watch"
-                >
-
-                <div class="product-details">
-                    <h3>Classic Watch</h3>
-                    <p>Quantity: 1</p>
-                </div>
-
-                <div class="product-price">â‚¹2,299</div>
-
-            </div>
-
-            <div class="order-bottom">
-
-                <div>
-                    <div class="total-label">Order total</div>
-                    <div class="total">â‚¹3,798</div>
-                </div>
-
-                <a href="#" class="view-button" onclick="showOrderDetails(event)">
-                    View details
-                </a>
-
-            </div>
-
-        </div>
-    </article>
-
-    <!-- ORDER 2 -->
-    <article class="order-card">
-
-        <div class="order-top">
-
-            <div class="order-info">
-
-                <div class="info-item">
-                    <span>Order</span>
-                    <strong>AM-351904</strong>
-                </div>
-
-                <div class="info-item">
-                    <span>Date</span>
-                    <strong>15 Sep 2026</strong>
-                </div>
-
-                <div class="info-item">
-                    <span>Payment</span>
-                    <strong>UPI</strong>
-                </div>
-
-            </div>
-
-            <div class="status">Delivered</div>
-
-        </div>
-
-        <div class="order-body">
-
-            <div class="product-row">
-
-                <img
-                    class="product-image"
-                    src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=300&q=80"
-                    alt="Wireless Headphones"
-                >
-
-                <div class="product-details">
-                    <h3>Wireless Headphones</h3>
-                    <p>Quantity: 1</p>
-                </div>
-
-                <div class="product-price">â‚¹2,999</div>
-
-            </div>
-
-            <div class="order-bottom">
-
-                <div>
-                    <div class="total-label">Order total</div>
-                    <div class="total">â‚¹2,999</div>
-                </div>
-
-                <a href="#" class="view-button" onclick="showOrderDetails(event)">
-                    View details
-                </a>
-
-            </div>
-
-        </div>
-    </article>
-
+    <div class="empty-state" style="display:block;text-align:center;padding:45px 20px;">
+        <p>Loading your orders...</p>
+    </div>
 </section>
 
 <!-- EMPTY STATE -->
 <section class="empty-state" id="emptyState">
-
-    <div class="empty-icon">â™¡</div>
-
+    <div class="empty-icon">&#9825;</div>
     <h2>No orders yet</h2>
-
-    <p>
-        Once you place an order, your purchases will appear here.
-    </p>
-
-    <a href="index.html" class="shop-button">
-        Start shopping
-    </a>
-
+    <p>Once you place an order, your purchases will appear here.</p>
+    <a href="index.html" class="shop-button">Start shopping</a>
 </section>
 
 
@@ -577,28 +427,157 @@
     <p>Â© 2026 Aishwarya Mart Â· Style that feels like you.</p>
 </footer>
 
+
 <script>
+    const ordersContainer = document.getElementById("ordersContainer");
+    const emptyState = document.getElementById("emptyState");
+    const selectedRatings = {};
 
-    function showOrderDetails(event) {
-        event.preventDefault();
+    async function loadOrders() {
+        ordersContainer.style.display = "flex";
+        emptyState.style.display = "none";
+        ordersContainer.innerHTML = '<div class="empty-state" style="display:block;text-align:center;padding:45px 20px;"><p>Loading your orders...</p></div>';
 
-        alert(
-            "Order details\n\n" +
-            "Your order has been confirmed.\n" +
-            "This page will be connected to the backend order history later."
-        );
+        try {
+            const response = await fetch("orders", {
+                headers: { "Accept": "application/json" },
+                credentials: "same-origin"
+            });
+
+            if (response.status === 401) {
+                window.location.href = "login.html";
+                return;
+            }
+            if (!response.ok) throw new Error("Could not load your orders.");
+
+            const orders = await response.json();
+            if (!Array.isArray(orders) || orders.length === 0) {
+                ordersContainer.style.display = "none";
+                emptyState.style.display = "block";
+                return;
+            }
+
+            const cards = await Promise.all(orders.map(async order => {
+                const itemsResponse = await fetch(
+                    "orders?action=items&orderId=" + encodeURIComponent(order.id),
+                    { headers: { "Accept": "application/json" }, credentials: "same-origin" }
+                );
+                if (!itemsResponse.ok) throw new Error("Could not load items for order #" + order.id);
+                const items = await itemsResponse.json();
+                return createOrderCard(order, Array.isArray(items) ? items : []);
+            }));
+            ordersContainer.innerHTML = cards.join("");
+        } catch (error) {
+            console.error(error);
+            ordersContainer.innerHTML = `
+                <div class="empty-state" style="display:block;text-align:center;padding:45px 20px;">
+                    <h2>Couldn't load your orders</h2>
+                    <p>Please check your connection and try again.</p>
+                    <button class="shop-button" onclick="loadOrders()" style="border:0;cursor:pointer;">Try again</button>
+                </div>`;
+        }
     }
 
-    /*
-       FRONTEND DEMO
+    function createOrderCard(order, items) {
+        const status = String(order.status || "PENDING").toUpperCase();
+        const itemHTML = items.length ? items.map((item, index) => {
+            const reviewId = "review_" + order.id + "_" + item.productId + "_" + index;
+            const image = item.imageUrl
+                ? '<img class="product-image" src="' + escapeHtml(item.imageUrl) + '" alt="' + escapeHtml(item.productName || "Product") + '" onerror="this.style.display=\'none\'">'
+                : "";
+            const review = status === "DELIVERED" ? `
+                <div class="review-box" id="${reviewId}">
+                    <div class="review-title">How was this product?</div>
+                    <div class="stars" aria-label="Choose a rating from one to five">
+                        ${[1,2,3,4,5].map(n => '<button type="button" class="star" aria-label="' + n + ' stars" onclick="selectRating(\'' + reviewId + '\',' + n + ')">&#9733;</button>').join("")}
+                    </div>
+                    <textarea class="review-comment" id="${reviewId}_comment" maxlength="1000" placeholder="Write a short review..."></textarea>
+                    <button type="button" class="review-submit" onclick="submitReview(${Number(item.productId)}, '${reviewId}')">Submit review</button>
+                </div>` : "";
+            return `
+                <div class="product-row">
+                    ${image}
+                    <div class="product-details">
+                        <h3>${escapeHtml(item.productName || ("Product #" + item.productId))}</h3>
+                        <p>Quantity: ${Number(item.quantity) || 0}</p>
+                    </div>
+                    <div class="product-price">&#8377;${formatMoney((Number(item.price) || 0) * (Number(item.quantity) || 0))}</div>
+                </div>
+                ${review}`;
+        }).join("") : '<p class="intro">No item details are available for this order.</p>';
 
-       Later this page can load real orders from:
-       OrderServlet / API
+        return `
+            <article class="order-card">
+                <div class="order-top">
+                    <div class="order-info">
+                        <div class="info-item"><span>Order</span><strong>#${escapeHtml(order.id)}</strong></div>
+                        <div class="info-item"><span>Date</span><strong>${escapeHtml(formatDate(order.createdAt))}</strong></div>
+                        <div class="info-item"><span>Items</span><strong>${items.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0)}</strong></div>
+                    </div>
+                    <div class="status">${escapeHtml(status)}</div>
+                </div>
+                <div class="order-body">
+                    ${itemHTML}
+                    <div class="order-bottom">
+                        <div><div class="total-label">Order total</div><div class="total">&#8377;${formatMoney(order.totalAmount)}</div></div>
+                    </div>
+                </div>
+            </article>`;
+    }
 
-       The demo cards above are kept for now so the page
-       looks complete while the backend is being connected.
-    */
+    function selectRating(reviewId, rating) {
+        selectedRatings[reviewId] = rating;
+        const box = document.getElementById(reviewId);
+        if (!box) return;
+        box.querySelectorAll(".star").forEach((star, index) => star.classList.toggle("active", index < rating));
+    }
 
+    async function submitReview(productId, reviewId) {
+        const rating = selectedRatings[reviewId];
+        if (!rating) { alert("Please select a star rating first."); return; }
+        const box = document.getElementById(reviewId);
+        if (!box) return;
+        const button = box.querySelector(".review-submit");
+        const comment = document.getElementById(reviewId + "_comment").value.trim();
+        button.disabled = true;
+        button.textContent = "Submitting...";
+        try {
+            const body = new URLSearchParams({ productId: String(productId), rating: String(rating), comment });
+            const response = await fetch("reviews", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8", "Accept": "application/json" },
+                credentials: "same-origin",
+                body: body.toString()
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || "Could not submit review.");
+            box.innerHTML = '<div class="review-done">Thank you! Your review has been submitted.</div>';
+        } catch (error) {
+            alert(error.message || "Could not submit review.");
+            button.disabled = false;
+            button.textContent = "Submit review";
+        }
+    }
+
+    function formatDate(value) {
+        if (!value) return "Date unavailable";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return String(value);
+        return date.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+    }
+
+    function formatMoney(value) {
+        return Number(value || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function escapeHtml(value) {
+        return String(value == null ? "" : value)
+            .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;").replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    loadOrders();
 </script>
 
 </body>
