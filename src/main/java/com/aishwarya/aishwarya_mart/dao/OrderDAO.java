@@ -78,7 +78,7 @@ public class OrderDAO extends BaseDAO {
         List<Order> orders = new ArrayList<>();
 
         String sql = """
-                SELECT id, user_id, total_amount, status, created_at
+                SELECT id, user_id, total_amount, status, created_at, delivery_name, delivery_email, delivery_phone, delivery_address, delivery_city, delivery_pincode, payment_method
                 FROM orders
                 WHERE user_id = ?
                 ORDER BY created_at DESC
@@ -116,7 +116,14 @@ public class OrderDAO extends BaseDAO {
                     o.user_id,
                     o.total_amount,
                     o.status,
-                    o.created_at
+                    o.created_at,
+                    o.delivery_name,
+                    o.delivery_email,
+                    o.delivery_phone,
+                    o.delivery_address,
+                    o.delivery_city,
+                    o.delivery_pincode,
+                    o.payment_method
                 FROM orders o
                 INNER JOIN order_items oi
                     ON o.id = oi.order_id
@@ -411,7 +418,7 @@ public class OrderDAO extends BaseDAO {
         List<Order> orders = new ArrayList<>();
 
         String sql = """
-                SELECT id, user_id, total_amount, status, created_at
+                SELECT id, user_id, total_amount, status, created_at, delivery_name, delivery_email, delivery_phone, delivery_address, delivery_city, delivery_pincode, payment_method
                 FROM orders
                 ORDER BY created_at DESC
                 """;
@@ -446,6 +453,14 @@ public class OrderDAO extends BaseDAO {
                 result.getTimestamp("created_at")
                         .toLocalDateTime()
         );
+        order.setDeliveryName(result.getString("delivery_name"));
+        order.setDeliveryEmail(result.getString("delivery_email"));
+        order.setDeliveryPhone(result.getString("delivery_phone"));
+        order.setDeliveryAddress(result.getString("delivery_address"));
+        order.setDeliveryCity(result.getString("delivery_city"));
+        order.setDeliveryPincode(result.getString("delivery_pincode"));
+        order.setPaymentMethod(result.getString("payment_method"));
+        return order;
     }
 
     private OrderItem mapOrderItem(ResultSet result)
