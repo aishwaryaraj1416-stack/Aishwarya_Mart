@@ -1172,6 +1172,7 @@
 </style>
 
 
+    <link rel="stylesheet" href="chatbot.css">
 </head>
 
 <body>
@@ -2565,6 +2566,32 @@
     loadCart();
 
 </script>
+
+
+<div id="boba-chat">
+  <button id="boba-launcher" type="button" aria-label="Open Boba shopping assistant" aria-expanded="false" title="Chat with Boba">🧋</button>
+  <section id="boba-panel" role="dialog" aria-label="Boba shopping assistant" hidden>
+    <header class="boba-header">
+      <div class="boba-avatar" aria-hidden="true">🧋</div>
+      <div class="boba-heading"><strong>Boba</strong><small>Your Aishwarya Mart shopping buddy</small></div>
+      <button id="boba-close" type="button" aria-label="Close chat">×</button>
+    </header>
+    <div class="boba-intro">Hiii! Need a little shopping help? Ask me about products, budgets, or your cart. ✨</div>
+    <div class="boba-prompts" aria-label="Quick questions">
+      <button type="button" data-boba-prompt="Show me products">Browse products</button>
+      <button type="button" data-boba-prompt="Show products under ₹500">Under ₹500</button>
+      <button type="button" data-boba-prompt="Show my cart">My cart</button>
+    </div>
+    <div id="boba-messages" aria-live="polite">
+      <div class="boba-message boba-bot">Welcome in! 🛍️ Tell me what you're looking for and we'll find it together.</div>
+    </div>
+    <form id="boba-form">
+      <input id="boba-input" type="text" maxlength="1000" placeholder="Ask Boba anything…" autocomplete="off" aria-label="Message Boba" required>
+      <button id="boba-send" type="submit" aria-label="Send message">➤</button>
+    </form>
+  </section>
+</div>
+<script src="chatbot.js"></script>
 
 </body>
 </html>
